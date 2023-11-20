@@ -19,7 +19,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import './../css/main.css';
 import Sidebar from './Sidebar';
-
+import { Button } from '@chakra-ui/react';
+import ContextMenu from './ContextMenu';
 const initialNodes = [
   {
     id: '1',
@@ -37,6 +38,12 @@ const FlowComponent = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [menu, setMenu] = useState(null);
+  const ref = useRef(null);
+
+  const handleRunClick = () => {
+    console.log('Running...');
+  };
 
   const onConnect = useCallback(
     (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -77,13 +84,39 @@ const FlowComponent = () => {
     },
     [reactFlowInstance, setNodes],
   );
+  
+  const onNodeContextMenu = useCallback(
+    (event, node) => {
+      // Prevent native context menu from showing
+      event.preventDefault();
 
+      // Calculate position of the context menu. We want to make sure it
+      // doesn't get positioned off-screen.
+      const pane = ref.current.getBoundingClientRect();
+      setMenu({
+        id: node.id,
+        top: event.clientY < pane.height - 200 && event.clientY,
+        left: event.clientX < pane.width - 200 && event.clientX,
+        right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
+        bottom:
+          event.clientY >= pane.height - 200 && pane.height - event.clientY,
+      });
+    },
+    [setMenu],
+  );
+  // Close the context menu if it's open whenever the window is clicked.
+  const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
+  
   return (
     <div className="dndflow">
       <ReactFlowProvider>
         <Sidebar />
+        <Button colorScheme="blue" onClick={handleRunClick}>
+              Run
+        </Button>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{height: '100vh', width: '100vw'}}>
           <ReactFlow
+            ref={ref}
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
@@ -92,9 +125,12 @@ const FlowComponent = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeContextMenu={onNodeContextMenu}
+            onPaneClick={onPaneClick}
             fitView
           >
             <Background/>
+            {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
             <Controls />
           </ReactFlow>
         </div>
