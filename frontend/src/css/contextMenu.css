@@ -1,5 +1,5 @@
 .context-menu {
-    position: absolute;
+    position: sticky;
     z-index: 10;
   }
   
