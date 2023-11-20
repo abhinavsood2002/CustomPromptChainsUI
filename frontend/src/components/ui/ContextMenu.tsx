@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react';
 import { useReactFlow } from 'reactflow';
 import {Menu, MenuList, MenuItem} from '@chakra-ui/react'
-import './../css/contextMenu.css'
+import './../../css/contextMenu.css'
 
 export default function ContextMenu({
   id,

@@ -17,25 +17,19 @@ import ReactFlow, {
   Background,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import './../css/main.css';
+import './../../css/main.css';
 import Sidebar from './Sidebar';
 import { Button } from '@chakra-ui/react';
+import ChainNode from './../nodes/ChainNode'
 import ContextMenu from './ContextMenu';
-const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'input node' },
-    position: { x: 250, y: 5 },
-  },
-];
 
+const nodeTypes = { chain_node: ChainNode };
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const FlowComponent = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [menu, setMenu] = useState(null);
@@ -127,6 +121,7 @@ const FlowComponent = () => {
             onDragOver={onDragOver}
             onNodeContextMenu={onNodeContextMenu}
             onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
             fitView
           >
             <Background/>

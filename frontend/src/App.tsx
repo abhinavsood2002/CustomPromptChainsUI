@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import FlowComponent from './components/FlowComponent';
+import FlowComponent from './components/ui/FlowComponent';
 
 function App() {
   return (
