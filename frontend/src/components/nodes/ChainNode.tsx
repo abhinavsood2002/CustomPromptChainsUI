@@ -24,7 +24,7 @@ function ChainNode({ data, isConnectable }) {
                     Prompt <Textarea placeholder='Enter a prompt to Transform your input' />
                     </Box>
                     <Box h='60px'>
-                    Input
+                    Input 
                     </Box>
                     <Box h='60px'>
                     Output

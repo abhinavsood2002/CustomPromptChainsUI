@@ -101,6 +101,13 @@ const FlowComponent = () => {
   // Close the context menu if it's open whenever the window is clicked.
   const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
   
+  const onEdgeDoubleClick = useCallback(
+    (event, edge) => {
+      event.preventDefault();
+      setEdges((eds) => eds.filter(ed => ed.id !== edge.id));
+    },
+  [setEdges])
+  
   return (
     <div className="dndflow">
       <ReactFlowProvider>
@@ -121,8 +128,10 @@ const FlowComponent = () => {
             onDragOver={onDragOver}
             onNodeContextMenu={onNodeContextMenu}
             onPaneClick={onPaneClick}
+            onEdgeDoubleClick={onEdgeDoubleClick}
             nodeTypes={nodeTypes}
             fitView
+            
           >
             <Background/>
             {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
