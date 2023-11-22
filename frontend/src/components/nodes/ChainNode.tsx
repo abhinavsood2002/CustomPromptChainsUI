@@ -26,11 +26,11 @@ function ChainNode({ data, isConnectable }) {
         <Handle type="source" 
                             position={Position.Right}  
                             isConnectable={isConnectable} 
-                            style={{top: 225}}/>
+                            style={{top: 180}}/>
         <Handle type="target" 
         position={Position.Left} 
         isConnectable={isConnectable} 
-        style={{top: 150}}/>
+        style={{top: 145}}/>
         <Box  maxW='sm' border='1px' borderColor='gray.200' borderRadius='10px' shadow='lg' bg='white'>
             <Center>
                 <VStack

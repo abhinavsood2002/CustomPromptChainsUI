@@ -1,5 +1,4 @@
 from flask import Flask, request
-import langchain
 from langchain.llms import LlamaCpp
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
