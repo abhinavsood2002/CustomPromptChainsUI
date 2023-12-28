@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Run the following commands on the frontend
+run_frontend="cd ./frontend && npm run start"
+
+# Terminals to run commands in
+terminals=("konsole" "gnome-terminal" "xterm" "aterm")
+
+
+# Check for existence of terminals and run commands in separate windows
+for term in "${terminals[@]}"; do
+    if command -v "$term" >/dev/null 2>&1; then
+        # Run frontend in a new terminal window
+        "$term" -e "bash -c '${run_frontend}; exec bash'" &
+    	break
+    fi
+done
+
+# Run backend on current terminal
+cd ./backend
+eval "$(conda shell.bash hook)"
+conda activate PromptChainsUIEnv
+python app.py
+

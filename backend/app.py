@@ -2,6 +2,8 @@ from flask import Flask, request
 from langchain.llms import LlamaCpp
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
+from flask_cors import CORS
+
 DEFAULT_PROMPT = "RETURN ERROR"
 model_path = "models/tiny-llama-openhermes-1.1b-step-715k-1.5t.q4_k_m.gguf"
 context_window = 100
@@ -12,6 +14,7 @@ llm_chain = LLMChain(
 )
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/api/run/chain_node', methods=['GET'])
 def run_chain_node():
