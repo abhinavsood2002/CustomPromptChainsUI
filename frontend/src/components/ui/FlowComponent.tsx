@@ -9,8 +9,6 @@ import React, { useState, useRef, useCallback } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
-  useNodesState,
-  useEdgesState,
   Controls,
   Connection,
   Edge,
@@ -22,26 +20,24 @@ import Sidebar from './Sidebar';
 import { Button } from '@chakra-ui/react';
 import ChainNode from './../nodes/ChainNode'
 import ContextMenu from './ContextMenu';
-
+import useStore  from '../../store';
+import { nanoid } from 'nanoid';
 const nodeTypes = { chain_node: ChainNode };
-let id = 0;
-const getId = () => `dndnode_${id++}`;
 
 const FlowComponent = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const reactFlowState = useStore();
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [menu, setMenu] = useState(null);
   const ref = useRef(null);
-
+  
   const handleRunClick = () => {
     console.log('Running...');
   };
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
+    (params: Edge | Connection) => reactFlowState.setEdges(addEdge(params, reactFlowState.edges)),
+    [reactFlowState.edges, reactFlowState.setEdges],
   );
 
   const onDragOver = useCallback((event) => {
@@ -67,16 +63,17 @@ const FlowComponent = () => {
         x: event.clientX,
         y: event.clientY,
       });
+
       const newNode = {
-        id: getId(),
+        id: nanoid(),
         type,
         position,
-        data: { label: `${type} node` },
+        data: {},
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      reactFlowState.setNodes(reactFlowState.nodes.concat(newNode));
     },
-    [reactFlowInstance, setNodes],
+    [reactFlowInstance, reactFlowState.nodes, reactFlowState.setNodes],
   );
   
   const onNodeContextMenu = useCallback(
@@ -104,9 +101,9 @@ const FlowComponent = () => {
   const onEdgeDoubleClick = useCallback(
     (event, edge) => {
       event.preventDefault();
-      setEdges((eds) => eds.filter(ed => ed.id !== edge.id));
+      reactFlowState.deleteEdge(edge.id);
     },
-  [setEdges])
+  [reactFlowState.deleteEdge])
   
   return (
     <div className="dndflow">
@@ -118,10 +115,10 @@ const FlowComponent = () => {
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{height: '100vh', width: '100vw'}}>
           <ReactFlow
             ref={ref}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
+            nodes={reactFlowState.nodes}
+            edges={reactFlowState.edges}
+            onNodesChange={reactFlowState.onNodesChange}
+            onEdgesChange={reactFlowState.onEdgesChange}
             onConnect={onConnect}
             onInit={setReactFlowInstance}
             onDrop={onDrop}

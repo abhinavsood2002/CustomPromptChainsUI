@@ -1,17 +1,24 @@
 import { Box, Center, Textarea, StackDivider, VStack, Button, HStack } from '@chakra-ui/react'
 import React from 'react';
 import { Handle, Position } from 'reactflow';
+import useStore from '../../store';
 
-
-function ChainNode({ data, isConnectable }) {
+function ChainNode({id, data, isConnectable }) {
+  const reactFlowState = useStore();
   const [prompt, setPrompt] = React.useState('')
   const [input, setInput] = React.useState('')
   const [output, setOutput] = React.useState('')
-
+  
   const handleInputChange = (e) => {
-    let inputValue = e.target.value
-    setPrompt(inputValue)
+    let inputValue = e.target.value;
+    setPrompt(inputValue);
+    console.log(id);
   }
+
+  const handleUpdateState = () => {
+    reactFlowState.updateNodeData(id, {data: {prompt: prompt}});
+  }
+
   const run = () => {
     const promptToPass = encodeURIComponent(prompt);
     const inputToPass = encodeURIComponent(input);
@@ -51,6 +58,7 @@ function ChainNode({ data, isConnectable }) {
                       <Textarea 
                         value={prompt}
                         onChange={handleInputChange}
+                        onBlur={handleUpdateState}
                         placeholder='Enter a prompt to Transform your input' />
                      
                     </Box>
