@@ -1,4 +1,4 @@
-import { Box, Center, Textarea, StackDivider, VStack, Button, HStack } from '@chakra-ui/react'
+import { Box, Center, Textarea, StackDivider, VStack, Button, HStack, Spinner} from '@chakra-ui/react'
 import React, { useEffect } from 'react';
 import { Node, Handle, Position } from 'reactflow';
 import useStore from '../../store';
@@ -6,14 +6,18 @@ import { runNode } from '../../library/runNodes';
 
 function ChainNode({id, data, isConnectable }) {
   const reactFlowState = useStore();
-  const [prompt, setPrompt] = React.useState('')
-  const [input, setInput] = React.useState('')
-  const [output, setOutput] = React.useState('')
-  
+  const [prompt, setPrompt] = React.useState('');
+  const [input, setInput] = React.useState('');
+  const [output, setOutput] = React.useState('');
+  const [isRunning, setIsRunning] = React.useState(false);
+
   useEffect(() => {
     const currentNode: Node = reactFlowState.getNode(id);
+
     setInput(currentNode.data.input);
     setOutput(currentNode.data.output);
+    setIsRunning(currentNode.data.running);
+    console.log(currentNode.data.running);
     }, [reactFlowState.getNode(id).data] 
   );
 
@@ -52,6 +56,9 @@ function ChainNode({id, data, isConnectable }) {
                           <Button colorScheme="blue" onClick={() => runNode(id)} h='20px' w='20px'>
                             Run
                           </Button>
+                        </Box>
+                        <Box>
+                          {isRunning && <Spinner/> }
                         </Box>
                       </HStack>
                       <Textarea 

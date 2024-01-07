@@ -71,7 +71,7 @@ const FlowComponent = () => {
         id: nanoid(),
         type,
         position,
-        data: {input: "", output: "", prompt:""},
+        data: {input: "", output: "", prompt:"", running:false},
       };
 
       reactFlowState.setNodes(reactFlowState.nodes.concat(newNode));

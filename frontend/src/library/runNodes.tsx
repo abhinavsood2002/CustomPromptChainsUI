@@ -42,6 +42,7 @@ export const runNode = async (id) => {
   try {
     const reactFlowState = useStore.getState();
     const nodeToRun = reactFlowState.getNode(id);
+    reactFlowState.updateNodeData(id, {running: true})
     const inputEdge = reactFlowState.getEdges('', id)[0];
     const inputNodeId = inputEdge ? inputEdge.source : null;
     const inputNode = inputNodeId ? reactFlowState.getNode(inputNodeId) : null;
@@ -60,6 +61,7 @@ export const runNode = async (id) => {
     reactFlowState.updateNodeData(id, {
       input: input,
       output: result.output,
+      running: false
     });
   } catch (error) {
     console.error('Error running node:', error);
