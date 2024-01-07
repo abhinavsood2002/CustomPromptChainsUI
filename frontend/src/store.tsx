@@ -18,6 +18,8 @@ type DeleteEdge = (edge_id: string) => void;
 type SetNodes = (nodes: Node[]) => void;
 type SetEdges = (edges: Edge[]) => void;
 type UpdateNodeData = (node_id: string, newData:Object) => void;
+type GetNode = (node_id: string) => Node;
+type GetEdges = (source?: string, target?: string) => Edge[];
 
 export type RFState = {
   nodes: Node[];
@@ -26,6 +28,8 @@ export type RFState = {
   onEdgesChange: OnEdgesChange;
   setNodes: SetNodes;
   setEdges: SetEdges;
+  getNode: GetNode; 
+  getEdges: GetEdges;
   updateNodeData: UpdateNodeData;
   deleteNode: DeleteNode;
   deleteEdge: DeleteEdge;
@@ -49,7 +53,6 @@ const useStore = create<RFState>((set, get) => ({
   },
 
   setNodes: (nodes: Node[]) => {
-    console.log(nodes);
     set({
       nodes: nodes,
     });
@@ -59,6 +62,26 @@ const useStore = create<RFState>((set, get) => ({
     set({
       edges: edges,
     });
+  },
+
+   // Function to get a node by ID
+  getNode: (node_id: string) => {
+    const nodes = get().nodes; // Get the current nodes state
+    return nodes.find((node) => node.id === node_id); // Find the node by ID
+  },
+
+  getEdges: (source: string = '', target: string = '') => {
+    const edges = get().edges; // Get the current edges state
+
+    if (source && target) {
+      return edges.filter((edge) => edge.source === source && edge.target === target);
+    } else if (source) {
+      return edges.filter((edge) => edge.source === source);
+    } else if (target) {
+      return edges.filter((edge) => edge.target === target);
+    } else {
+      return [];
+    }
   },
 
   updateNodeData: (node_id: string, newData: Object) => {

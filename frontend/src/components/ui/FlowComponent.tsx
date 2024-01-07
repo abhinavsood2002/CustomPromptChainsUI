@@ -22,6 +22,8 @@ import ChainNode from './../nodes/ChainNode'
 import ContextMenu from './ContextMenu';
 import useStore  from '../../store';
 import { nanoid } from 'nanoid';
+import { runNodes } from '../../library/runNodes';
+
 const nodeTypes = { chain_node: ChainNode };
 
 const FlowComponent = () => {
@@ -31,8 +33,9 @@ const FlowComponent = () => {
   const [menu, setMenu] = useState(null);
   const ref = useRef(null);
   
-  const handleRunClick = () => {
+  const handleRunClick = async () => {
     console.log('Running...');
+    await runNodes();
   };
 
   const onConnect = useCallback(
@@ -68,10 +71,12 @@ const FlowComponent = () => {
         id: nanoid(),
         type,
         position,
-        data: {},
+        data: {input: "", output: "", prompt:""},
       };
 
       reactFlowState.setNodes(reactFlowState.nodes.concat(newNode));
+      console.log(reactFlowState.nodes)
+      console.log(reactFlowState.edges)
     },
     [reactFlowInstance, reactFlowState.nodes, reactFlowState.setNodes],
   );

@@ -1,7 +1,8 @@
 import { Box, Center, Textarea, StackDivider, VStack, Button, HStack } from '@chakra-ui/react'
-import React from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { useEffect } from 'react';
+import { Node, Handle, Position } from 'reactflow';
 import useStore from '../../store';
+import { runNode } from '../../library/runNodes';
 
 function ChainNode({id, data, isConnectable }) {
   const reactFlowState = useStore();
@@ -9,24 +10,22 @@ function ChainNode({id, data, isConnectable }) {
   const [input, setInput] = React.useState('')
   const [output, setOutput] = React.useState('')
   
+  useEffect(() => {
+    const currentNode: Node = reactFlowState.getNode(id);
+    setInput(currentNode.data.input);
+    setOutput(currentNode.data.output);
+    }, [reactFlowState.getNode(id).data] 
+  );
+
   const handleInputChange = (e) => {
     let inputValue = e.target.value;
     setPrompt(inputValue);
     console.log(id);
-  }
+  };
 
   const handleUpdateState = () => {
-    reactFlowState.updateNodeData(id, {data: {prompt: prompt}});
+    reactFlowState.updateNodeData(id, {prompt: prompt});
   }
-
-  const run = () => {
-    const promptToPass = encodeURIComponent(prompt);
-    const inputToPass = encodeURIComponent(input);
-    const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/chain_node?prompt=${promptToPass}&input=${inputToPass}`
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((result) => setOutput(result.output))
-  };
 
   return (
     <div className="text-updater-node">
@@ -50,7 +49,7 @@ function ChainNode({id, data, isConnectable }) {
                           Prompt
                         </Box>
                         <Box>
-                          <Button colorScheme="blue" onClick={run} h='20px' w='20px'>
+                          <Button colorScheme="blue" onClick={() => runNode(id)} h='20px' w='20px'>
                             Run
                           </Button>
                         </Box>
