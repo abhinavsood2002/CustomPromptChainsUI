@@ -111,10 +111,10 @@ const FlowComponent = () => {
   [reactFlowState.deleteEdge])
   
   return (
-    <div className="dndflow">
+    <div className="flow-container">
       <ReactFlowProvider>
         <Sidebar />
-        <Button colorScheme="blue" onClick={handleRunClick}>
+        <Button colorScheme="blue" onClick={handleRunClick} className="run-button">
               Run
         </Button>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{height: '100vh', width: '100vw'}}>
