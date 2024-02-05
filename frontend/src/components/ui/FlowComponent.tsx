@@ -39,6 +39,16 @@ const FlowComponent = () => {
     await runNodes();
   };
 
+  const handleSave = () => {
+    const fileData = {"nodes": reactFlowState.nodes, "edges": reactFlowState.edges};
+    const blob = new Blob([JSON.stringify(fileData)], {type: 'application/json'});
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'rename_node.json';
+    link.click();
+  };
+
   const onConnect = useCallback(
     (params: Edge | Connection) => reactFlowState.setEdges(addEdge(params, reactFlowState.edges)),
     [reactFlowState.edges, reactFlowState.setEdges],
@@ -115,12 +125,6 @@ const FlowComponent = () => {
     <div className="flow-container">
       <ReactFlowProvider>
         <Sidebar />
-        <Button leftIcon={<FaPlay/>}colorScheme="blue" onClick={handleRunClick} className="run-button">
-              Run
-        </Button>
-        <Button leftIcon={<FaSave/>} colorScheme="teal" className="save-button">
-              Save
-        </Button>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{height: '100vh', width: '100vw'}}>
           <ReactFlow
             ref={ref}
@@ -146,6 +150,12 @@ const FlowComponent = () => {
         </div>
         
       </ReactFlowProvider>
+      <Button leftIcon={<FaPlay/>}colorScheme="blue" onClick={handleRunClick} className="run-button">
+              Run
+      </Button>
+      <Button leftIcon={<FaSave/>} colorScheme="teal" onClick={handleSave} className="save-button">
+            Save
+      </Button>
     </div>
   );
 };

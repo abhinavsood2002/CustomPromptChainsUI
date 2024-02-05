@@ -74,10 +74,12 @@
   position: fixed;
   top: 20px;
   right: 20px;
+  z-index: 0;
 }
 
 .flow-container .save-button {
   position: fixed;
   top: 20px;
   right: 120px;
+  z-index: 0;
 }
