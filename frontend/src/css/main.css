@@ -62,6 +62,7 @@
   .flow-container aside {
     width: 20%;
     max-width: 250px;
+    z-index: 0;
   }
 }
 

@@ -124,7 +124,6 @@ const FlowComponent = () => {
   return (
     <div className="flow-container">
       <ReactFlowProvider>
-        <Sidebar />
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{height: '100vh', width: '100vw'}}>
           <ReactFlow
             ref={ref}
@@ -156,6 +155,7 @@ const FlowComponent = () => {
       <Button leftIcon={<FaSave/>} colorScheme="teal" onClick={handleSave} className="save-button">
             Save
       </Button>
+      <Sidebar />
     </div>
   );
 };
