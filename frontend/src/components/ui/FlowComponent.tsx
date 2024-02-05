@@ -144,7 +144,7 @@ const FlowComponent = () => {
           >
             <Background/>
             {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
-            <Controls />
+            <Controls position='bottom-right'/>
           </ReactFlow>
         </div>
         

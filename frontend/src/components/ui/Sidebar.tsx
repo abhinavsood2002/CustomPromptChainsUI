@@ -29,8 +29,9 @@
 // export default Sidebar;
 import React, { useState } from 'react';
 import { Box, Text, Input, Button, VStack, IconButton } from '@chakra-ui/react';
-import { MdAdd, MdChevronLeft } from 'react-icons/md';
+import { MdAdd, MdChevronLeft, MdExpand, MdFullscreen, MdFullscreenExit } from 'react-icons/md';
 const Sidebar = () => {
+  const [open, setOpen] = useState(true);
   const [options, setOptions] = useState([
     {
       heading: 'Group 1',
@@ -45,7 +46,7 @@ const Sidebar = () => {
   const [newOption, setNewOption] = useState('');
 
   const toggleSidebar = () => {
-    // Implement your toggle logic here
+    setOpen(!open);
   };
 
   const addOption = () => {
@@ -60,7 +61,7 @@ const Sidebar = () => {
   return (
     <Box
       pos="fixed"
-      left={0}
+      left={open ? 0 : '-220px'}
       top={0}
       h="100vh"
       w="250px"
@@ -96,12 +97,11 @@ const Sidebar = () => {
       </VStack>
 
       <IconButton
-        icon={<MdChevronLeft/>}
+        icon={open ? <MdFullscreenExit/> : <MdFullscreen/> }
         onClick={toggleSidebar}
         pos="absolute"
         bottom={4}
-        left="250px"
-        transform="translateX(-50%)"
+        left="210px"
         aria-label="Collapse Sidebar"
       />
     </Box>
