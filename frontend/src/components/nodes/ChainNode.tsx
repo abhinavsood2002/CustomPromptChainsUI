@@ -11,6 +11,7 @@ function ChainNode({id, data, isConnectable }) {
   const [output, setOutput] = React.useState('');
   const [isRunning, setIsRunning] = React.useState(false);
 
+  
   useEffect(() => {
     const currentNode = reactFlowState.getNode(id);
   
@@ -42,10 +43,10 @@ function ChainNode({id, data, isConnectable }) {
         position={Position.Left} 
         isConnectable={isConnectable} 
         style={{top: 145}}/>
-        <Box  maxW='sm' border='1px' borderColor='gray.200' borderRadius='10px' shadow='lg' bg='white'>
+        <Box  maxW='sm' border='1px' borderColor='gray.400' borderRadius='10px' shadow='lg' bg='white'>
             <Center>
                 <VStack
-                divider={<StackDivider borderColor='gray.200' />}
+                divider={<StackDivider borderColor='gray.400' />}
                 spacing={2}
                 >
                     <Box >

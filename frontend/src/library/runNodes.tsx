@@ -1,8 +1,6 @@
 import useStore from '../store';
 import {Node, Edge} from 'reactflow';
 
-
-
 function topologicalSort(nodes, edges) {
     const inDegree = {}; // Map to store in-degree of each node
     const adjacencyList = {}; // Map to store the adjacency list (edges)
