@@ -12,14 +12,15 @@ function ChainNode({id, data, isConnectable }) {
   const [isRunning, setIsRunning] = React.useState(false);
 
   useEffect(() => {
-    const currentNode: Node = reactFlowState.getNode(id);
-
-    setInput(currentNode.data.input);
-    setOutput(currentNode.data.output);
-    setIsRunning(currentNode.data.running);
-    console.log(currentNode.data.running);
-    }, [reactFlowState.getNode(id).data] 
-  );
+    const currentNode = reactFlowState.getNode(id);
+  
+    if (currentNode && currentNode.data) {
+      setInput(currentNode.data.input);
+      setOutput(currentNode.data.output);
+      setIsRunning(currentNode.data.running);
+    } 
+    
+  }, [reactFlowState, id]);
 
   const handleInputChange = (e) => {
     let inputValue = e.target.value;
