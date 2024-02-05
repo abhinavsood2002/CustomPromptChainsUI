@@ -23,6 +23,7 @@ import ContextMenu from './ContextMenu';
 import useStore  from '../../store';
 import { nanoid } from 'nanoid';
 import { runNodes } from '../../library/runNodes';
+import { FaPlay, FaSave} from 'react-icons/fa';
 
 const nodeTypes = { chain_node: ChainNode };
 
@@ -114,8 +115,11 @@ const FlowComponent = () => {
     <div className="flow-container">
       <ReactFlowProvider>
         <Sidebar />
-        <Button colorScheme="blue" onClick={handleRunClick} className="run-button">
+        <Button leftIcon={<FaPlay/>}colorScheme="blue" onClick={handleRunClick} className="run-button">
               Run
+        </Button>
+        <Button leftIcon={<FaSave/>} colorScheme="teal" className="save-button">
+              Save
         </Button>
         <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{height: '100vh', width: '100vw'}}>
           <ReactFlow

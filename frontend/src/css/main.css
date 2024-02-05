@@ -71,6 +71,13 @@
 }
 
 .flow-container .run-button {
-  margin-top: 10px;
-  margin-left: 10px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
+.flow-container .save-button {
+  position: fixed;
+  top: 20px;
+  right: 120px;
 }
