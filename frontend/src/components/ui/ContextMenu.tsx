@@ -3,7 +3,7 @@ import React from "react"
 import { Menu, MenuList, MenuItem } from "@chakra-ui/react"
 import useStore from "../../store"
 import { shallow } from "zustand/shallow"
-import "./../../css/contextMenu.css"
+import "../../css/contextMenu.css"
 
 const contextMenuSelector = (state) => ({
   nodes: state.nodes,

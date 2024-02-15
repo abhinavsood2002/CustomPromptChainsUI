@@ -14,18 +14,18 @@ import ReactFlow, {
   Edge,
   Background,
 } from "reactflow"
+import { Node } from "reactflow"
 import "reactflow/dist/style.css"
-import "./../../css/main.css"
+import "../../css/main.css"
 import Sidebar from "./Sidebar"
 import { Button } from "@chakra-ui/react"
-import ChainNode from "./../nodes/ChainNode"
 import ContextMenu from "./ContextMenu"
 import useStore from "../../store"
 import { nanoid } from "nanoid"
 import { runNodes } from "../../library/runNodes"
 import { FaPlay, FaSave } from "react-icons/fa"
-
-const nodeTypes = { chain_node: ChainNode }
+import { NodeTypes } from "../../states/NodeTypes"
+import { group } from "console"
 
 const FlowComponent = () => {
   const reactFlowWrapper = useRef(null)
@@ -70,7 +70,6 @@ const FlowComponent = () => {
       event.preventDefault()
 
       const type = event.dataTransfer.getData("application/reactflow")
-
       // check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
         return
@@ -84,16 +83,72 @@ const FlowComponent = () => {
         y: event.clientY,
       })
 
-      const newNode = {
-        id: nanoid(),
-        type,
-        position,
-        data: { input: "", output: "", prompt: "", running: false },
-      }
+      if (type === "template") {
+        const newNode: Node = {
+          id: nanoid(),
+          type: "group",
+          position,
+          data: {},
+        }
+        var maxWidth = 0
+        var maxHeight = 0
+        const jsonStringData = event.dataTransfer.getData("application/json")
+        const { nodes, edges } = JSON.parse(jsonStringData)
+        // Reparameterize custom node ids so that duplicates can be added to flow
+        const idMapping = {}
 
-      reactFlowState.setNodes(reactFlowState.nodes.concat(newNode))
+        const reparameterizedNodes = nodes.map((node) => {
+          const newId = nanoid()
+          const newPosition = {
+            x: node.position.x - nodes[0].position.x + 20,
+            y: node.position.y - nodes[0].position.y + 20,
+          }
+          maxHeight = Math.max(newPosition.y + node.height, maxHeight)
+          maxWidth = Math.max(newPosition.x + node.width, maxWidth)
+          console.log(newPosition)
+          console.log(position)
+          idMapping[node.id] = newId
+          return {
+            ...node,
+            id: newId,
+            parentNode: newNode.id,
+            position: newPosition,
+          }
+        })
+
+        const reparameterizedEdges = edges.map((edge) => ({
+          ...edge,
+          id: nanoid(),
+          source: idMapping[edge.source],
+          target: idMapping[edge.target],
+        }))
+
+        newNode.style = {
+          width: maxWidth + 20,
+          height: maxHeight + 20,
+        }
+        reactFlowState.setNodes(
+          reactFlowState.nodes.concat(newNode, reparameterizedNodes),
+        )
+        reactFlowState.setEdges(
+          reactFlowState.edges.concat(reparameterizedEdges),
+        )
+      } else {
+        const newNode = {
+          id: nanoid(),
+          type,
+          position,
+          data: { input: "", output: "", prompt: "", running: false },
+        }
+        reactFlowState.setNodes(reactFlowState.nodes.concat(newNode))
+      }
     },
-    [reactFlowInstance, reactFlowState.nodes, reactFlowState.setNodes],
+    [
+      reactFlowInstance,
+      reactFlowState.nodes,
+      reactFlowState.setNodes,
+      reactFlowState.setEdges,
+    ],
   )
 
   const onNodeContextMenu = useCallback(
@@ -147,7 +202,7 @@ const FlowComponent = () => {
             onNodeContextMenu={onNodeContextMenu}
             onPaneClick={onPaneClick}
             onEdgeDoubleClick={onEdgeDoubleClick}
-            nodeTypes={nodeTypes}
+            nodeTypes={NodeTypes}
             fitView
           >
             <Background />

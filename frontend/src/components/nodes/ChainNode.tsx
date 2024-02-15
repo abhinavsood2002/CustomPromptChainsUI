@@ -9,9 +9,9 @@ import {
   Spinner,
 } from "@chakra-ui/react"
 import React, { useEffect } from "react"
-import { Node, Handle, Position } from "reactflow"
+import { Handle, Position } from "reactflow"
 import useStore from "../../store"
-import { runNode } from "../../library/runNodes"
+import { runChainNode } from "../../library/runNodes"
 
 function ChainNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
@@ -70,7 +70,7 @@ function ChainNode({ id, data, isConnectable }) {
                 <Box>
                   <Button
                     colorScheme="blue"
-                    onClick={() => runNode(id)}
+                    onClick={() => runChainNode(id)}
                     h="20px"
                     w="20px"
                   >

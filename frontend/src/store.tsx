@@ -99,10 +99,28 @@ const useStore = create<RFState>((set, get) => ({
   },
 
   deleteNode: (node_id: string) => {
-    set({
-      nodes: get().nodes.filter((node) => node.id !== node_id),
-      edges: get().edges.filter((edge) => edge.source !== node_id),
-    })
+    const this_node = get().nodes.find((node) => node.id === node_id)
+    if (this_node.type === "group") {
+      const childrenToRemove = get().nodes.filter(
+        (node) => node.parentNode === node_id,
+      )
+      console.log(childrenToRemove.length)
+      if (childrenToRemove.length > 0) {
+        alert(
+          "Please remove all children nodes (nodes within the rectangle) before deleting a grouping. Doing otherwise will result in an error",
+        )
+      } else {
+        set({
+          nodes: get().nodes.filter((node) => node.id !== node_id),
+          edges: get().edges.filter((edge) => edge.source !== node_id),
+        })
+      }
+    } else {
+      set({
+        nodes: get().nodes.filter((node) => node.id !== node_id),
+        edges: get().edges.filter((edge) => edge.source !== node_id),
+      })
+    }
   },
 
   deleteEdge: (edge_id: string) => {

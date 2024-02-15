@@ -8,8 +8,8 @@ import {
   Divider,
 } from "@chakra-ui/react"
 import { MdFullscreen, MdFullscreenExit } from "react-icons/md"
-import { SidebarState } from "./../../states/SidebarState"
-import "./../../css/sidebarscrollbar.css"
+import { SidebarState } from "../../states/SidebarState"
+import "../../css/sidebarscrollbar.css"
 const Sidebar = () => {
   const [open, setOpen] = useState(true)
   const [options, setOptions] = useState(SidebarState)
@@ -17,7 +17,11 @@ const Sidebar = () => {
   const onDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     nodeType: string,
+    jsonData: string,
   ) => {
+    if (nodeType === "template") {
+      event.dataTransfer.setData("application/json", jsonData)
+    }
     event.dataTransfer.setData("application/reactflow", nodeType)
     event.dataTransfer.effectAllowed = "move"
   }
@@ -30,26 +34,30 @@ const Sidebar = () => {
       console.log("Only files are allowed.")
       return
     }
-    const file = event.dataTransfer.files[0]
+    const files = event.dataTransfer.files
 
     // Prevent non-json files from being dropped
-    if (file.type !== "application/json") {
-      console.log("Only JSON files are allowed.")
-      return
+    for (let file of files) {
+      if (file.type !== "application/json") {
+        console.log("Only JSON files are allowed.")
+        return
+      }
+
+      const fileContent = await file.text()
+      const { nodes, edges } = JSON.parse(fileContent)
+
+      // Add uploaded file to custom templates options group
+      const updatedOptions = [...options]
+      updatedOptions[1].options.push(file.name.replace(".json", ""))
+      updatedOptions[1].options_type.push("template")
+      updatedOptions[1].options_template.push({
+        nodes,
+        edges,
+      })
+
+      console.log(updatedOptions)
+      setOptions(updatedOptions)
     }
-    const updatedOptions = [...options]
-
-    const fileContent = await file.text()
-    const { nodes, edges } = JSON.parse(fileContent)
-
-    // Add uploaded file to custom templates options group
-    updatedOptions[1].options.push(file.name.replace(".json", ""))
-    updatedOptions[1].options_type.push("chain_node")
-    updatedOptions[1].options_template.push({
-      nodes,
-      edges,
-    })
-    setOptions(updatedOptions)
   }
 
   const handleDragOver = (e) => {
@@ -81,9 +89,17 @@ const Sidebar = () => {
             {optionGroup.options.map((option, index) => (
               <Box
                 key={option}
-                onDragStart={(event) =>
-                  onDragStart(event, optionGroup.options_type[index])
-                }
+                onDragStart={(event) => {
+                  if (optionGroup.options_type[index] === "template") {
+                    onDragStart(
+                      event,
+                      optionGroup.options_type[index],
+                      JSON.stringify(optionGroup.options_template[index]),
+                    )
+                  } else {
+                    onDragStart(event, optionGroup.options_type[index], "")
+                  }
+                }}
                 draggable
                 width="100%"
                 cursor="grab"

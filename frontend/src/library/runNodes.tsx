@@ -35,8 +35,7 @@ function topologicalSort(nodes, edges) {
 
   return result
 }
-
-export const runNode = async (id) => {
+export const runChainNode = async (id) => {
   try {
     const reactFlowState = useStore.getState()
     const nodeToRun = reactFlowState.getNode(id)
@@ -73,6 +72,14 @@ export const runNodes = async () => {
   const edges = reactFlowState.edges
   const runOrder = topologicalSort(nodes, edges)
   for (const node of runOrder) {
-    await runNode(node.id)
+    if (node.type === "chain_node") {
+      await runChainNode(node.id)
+    }
   }
 }
+
+// export const runNodeFactory = async (nodeType) => {
+//   if (nodeType === "chain_node") {
+//     return runChainNode;
+//   }
+// }
