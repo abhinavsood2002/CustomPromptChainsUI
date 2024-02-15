@@ -92,8 +92,6 @@ const FlowComponent = () => {
       }
 
       reactFlowState.setNodes(reactFlowState.nodes.concat(newNode))
-      console.log(reactFlowState.nodes)
-      console.log(reactFlowState.edges)
     },
     [reactFlowInstance, reactFlowState.nodes, reactFlowState.setNodes],
   )

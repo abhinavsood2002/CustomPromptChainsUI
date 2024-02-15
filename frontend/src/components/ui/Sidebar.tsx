@@ -22,16 +22,39 @@ const Sidebar = () => {
     event.dataTransfer.effectAllowed = "move"
   }
 
-  const handleDrop = useCallback((event) => {
+  const handleDrop = async (event) => {
     event.preventDefault()
-    const file = event.dataTransfer.files
-    const updatedOptions = [...options]
-    // Add uploaded file to custom templates options group
-    updatedOptions[1].options.push(file.name)
-    updatedOptions[1].options_type.push("chain_node")
-    setOptions(updatedOptions)
-  }, [])
 
+    // Check if there are objects other than files being dropped
+    if (!event.dataTransfer.files || event.dataTransfer.files.length === 0) {
+      console.log("Only files are allowed.")
+      return
+    }
+    const file = event.dataTransfer.files[0]
+
+    // Prevent non-json files from being dropped
+    if (file.type !== "application/json") {
+      console.log("Only JSON files are allowed.")
+      return
+    }
+    const updatedOptions = [...options]
+
+    const fileContent = await file.text()
+    const { nodes, edges } = JSON.parse(fileContent)
+
+    // Add uploaded file to custom templates options group
+    updatedOptions[1].options.push(file.name.replace(".json", ""))
+    updatedOptions[1].options_type.push("chain_node")
+    updatedOptions[1].options_template.push({
+      nodes,
+      edges,
+    })
+    setOptions(updatedOptions)
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+  }
   const toggleSidebar = () => {
     setOpen(!open)
   }
@@ -43,11 +66,12 @@ const Sidebar = () => {
       top={0}
       h="100vh"
       w="200px"
-      bg="gray.800"
+      bg="gray.700"
       color="white"
       p={5}
       overflowY="scroll"
       onDrop={handleDrop}
+      onDragOver={handleDragOver}
     >
       <VStack align="start" spacing={4} paddingBottom={10}>
         {options.map((optionGroup) => (
