@@ -27,19 +27,21 @@
 //     );
 //   };
 // export default Sidebar;
+
 import React, { useState } from 'react';
-import { Box, Text, Input, Button, VStack, IconButton } from '@chakra-ui/react';
-import { MdAdd, MdChevronLeft, MdExpand, MdFullscreen, MdFullscreenExit } from 'react-icons/md';
+import { Box, Text, Input, Button, VStack, IconButton, Tooltip, Divider } from '@chakra-ui/react';
+import { MdAdd, MdFullscreen, MdFullscreenExit } from 'react-icons/md';
+import './../../css/sidebarscrollbar.css';
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [options, setOptions] = useState([
     {
-      heading: 'Group 1',
-      options: ['Option 1.1', 'Option 1.2'],
+      heading: 'Predefined Nodes',
+      options: ['Prompt', 'Prompt with Context', 'Visualise', 'Describe'],
     },
     {
-      heading: 'Group 2',
-      options: ['Option 2.1', 'Option 2.2'],
+      heading: 'Drag in Templates',
+      options: [],
     },
   ]);
 
@@ -59,52 +61,52 @@ const Sidebar = () => {
   };
 
   return (
-    <Box
-      pos="fixed"
-      left={open ? 0 : '-220px'}
-      top={0}
-      h="100vh"
-      w="250px"
-      bg="gray.800"
-      color="white"
-      p={4}
-      overflowY="auto"
-    >
-      <Input
-        placeholder="New Option"
-        value={newOption}
-        onChange={(e) => setNewOption(e.target.value)}
-        mb={2}
-      />
-      <Button
-        leftIcon={<MdAdd />}
-        onClick={addOption}
-        mb={4}
-        aria-label="Add Option"
+      <Box
+        pos="fixed"
+        left={open ? 0 : '-200px'}
+        top={0}
+        h="100vh"
+        w="200px"
+        bg="gray.800"
+        color="white"
+        p={5}
+        overflowY="scroll"
       >
-        Add Option
-      </Button>
-
-      <VStack align="start" spacing={4}>
-        {options.map((optionGroup) => (
-          <VStack key={optionGroup.heading} align="start" spacing={2}>
-            <Text fontWeight="bold">{optionGroup.heading}</Text>
-            {optionGroup.options.map((option) => (
-              <Text key={option}>{option}</Text>
-            ))}
-          </VStack>
-        ))}
-      </VStack>
-
-      <IconButton
-        icon={open ? <MdFullscreenExit/> : <MdFullscreen/> }
-        onClick={toggleSidebar}
-        pos="absolute"
-        bottom={4}
-        left="210px"
-        aria-label="Collapse Sidebar"
-      />
-    </Box>
+        <VStack align="start" spacing={4} paddingBottom={10} >
+          {options.map((optionGroup) => (
+            <VStack key={optionGroup.heading} align="start" spacing={2}>
+              <Text fontWeight="bold">{optionGroup.heading}</Text>
+              <Divider/>
+              {optionGroup.options.map((option, index) => (
+                <Box
+                  key={option}
+                  draggable
+                  width="100%"
+                  cursor="grab"
+                  _hover={{
+                    background: "blue.300",
+                    color: "while",
+                  }}
+                  >
+                    {option}
+                  </Box>
+              ))}
+            </VStack>
+          ))}
+        </VStack>
+        <Tooltip label='Open/Close Sidebar'>
+          <IconButton
+          icon={open ? <MdFullscreenExit/> : <MdFullscreen/> }
+          onClick={toggleSidebar}
+          width="100px"
+          background="gray.300"
+          pos="fixed"
+          bottom={4}
+          left="40px"
+          aria-label="Collapse Sidebar"
+          />
+        </Tooltip>
+      </Box>
   );
 };
 export default Sidebar;
