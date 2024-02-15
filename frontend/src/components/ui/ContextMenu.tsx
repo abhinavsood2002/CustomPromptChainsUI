@@ -1,16 +1,16 @@
 // @ts-nocheck
-import React from 'react';
-import {Menu, MenuList, MenuItem} from '@chakra-ui/react'
-import useStore from '../../store';
-import { shallow } from 'zustand/shallow';
-import './../../css/contextMenu.css'
+import React from "react"
+import { Menu, MenuList, MenuItem } from "@chakra-ui/react"
+import useStore from "../../store"
+import { shallow } from "zustand/shallow"
+import "./../../css/contextMenu.css"
 
 const contextMenuSelector = (state) => ({
   nodes: state.nodes,
   edges: state.edges,
   duplicateNode: state.duplicateNode,
   deleteNode: state.deleteNode,
-}); 
+})
 
 export default function ContextMenu({
   id,
@@ -20,8 +20,10 @@ export default function ContextMenu({
   bottom,
   ...props
 }) {
-
-  const {nodes, edges, duplicateNode, deleteNode} = useStore(contextMenuSelector, shallow);
+  const { nodes, edges, duplicateNode, deleteNode } = useStore(
+    contextMenuSelector,
+    shallow,
+  )
 
   return (
     <div
@@ -31,10 +33,10 @@ export default function ContextMenu({
     >
       <Menu isOpen>
         <MenuList>
-            <MenuItem onClick={() => duplicateNode(id)}>Duplicate</MenuItem>
-            <MenuItem onClick={() => deleteNode(id)}>Delete</MenuItem>
+          <MenuItem onClick={() => duplicateNode(id)}>Duplicate</MenuItem>
+          <MenuItem onClick={() => deleteNode(id)}>Delete</MenuItem>
         </MenuList>
       </Menu>
     </div>
-  );
+  )
 }
