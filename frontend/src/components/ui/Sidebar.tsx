@@ -1,51 +1,33 @@
-// import React, { useCallback } from 'react';
-
-// const Sidebar = () => {
-//     const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string) => {
-//       event.dataTransfer.setData('application/reactflow', nodeType);
-//       event.dataTransfer.effectAllowed = 'move';
-//     };
-    
-//     const handleDrop = useCallback((event) => {
-//       event.preventDefault();
-//       const files = event.dataTransfer.files;
-//     }, []);
-    
-//     return (
-//       <aside onDrop={handleDrop}>
-//         <div className="description">You can drag these nodes to the pane on the right.</div>
-//         <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'chain_node')} draggable>
-//           Chain Node
-//         </div>
-//         <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-//           Default Node
-//         </div>
-//         <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-//           Output Node
-//         </div>
-//       </aside>
-//     );
-//   };
-// export default Sidebar;
-
-import React, { useState } from 'react';
-import { Box, Text, Input, Button, VStack, IconButton, Tooltip, Divider } from '@chakra-ui/react';
-import { MdAdd, MdFullscreen, MdFullscreenExit } from 'react-icons/md';
+import React, { useCallback, useState } from 'react';
+import { Box, Text, VStack, IconButton, Tooltip, Divider } from '@chakra-ui/react';
+import { MdFullscreen, MdFullscreenExit } from 'react-icons/md';
 import './../../css/sidebarscrollbar.css';
 const Sidebar = () => {
+  
   const [open, setOpen] = useState(true);
   const [options, setOptions] = useState([
     {
       heading: 'Predefined Nodes',
       options: ['Prompt', 'Prompt with Context', 'Visualise', 'Describe'],
+      options_type: ["chain_node", 'chain_node', 'chain_node', 'chain_node'],
+
     },
     {
       heading: 'Drag in Templates',
       options: [],
     },
   ]);
-
   const [newOption, setNewOption] = useState('');
+
+  const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+  
+  const handleDrop = useCallback((event) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+  }, []);
 
   const toggleSidebar = () => {
     setOpen(!open);
@@ -71,6 +53,7 @@ const Sidebar = () => {
         color="white"
         p={5}
         overflowY="scroll"
+        onDrop={handleDrop}
       >
         <VStack align="start" spacing={4} paddingBottom={10} >
           {options.map((optionGroup) => (
@@ -80,6 +63,7 @@ const Sidebar = () => {
               {optionGroup.options.map((option, index) => (
                 <Box
                   key={option}
+                  onDragStart={(event) => onDragStart(event, optionGroup.options_type[index])} 
                   draggable
                   width="100%"
                   cursor="grab"
