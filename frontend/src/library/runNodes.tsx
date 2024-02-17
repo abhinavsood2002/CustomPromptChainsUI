@@ -22,6 +22,11 @@ function topologicalSort(nodes, edges) {
 
   // Perform BFS
   while (queue.length > 0) {
+    
+    queue.sort((a) => {
+      return a.position.x;
+    });
+
     const currentNode: Node = queue.shift() // Dequeue a node
     result.push(currentNode) // Add node to the result
 
