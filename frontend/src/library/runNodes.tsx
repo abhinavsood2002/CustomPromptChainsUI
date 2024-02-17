@@ -35,18 +35,24 @@ function topologicalSort(nodes, edges) {
 
   return result
 }
+
 export const runChainNode = async (id) => {
   try {
     const reactFlowState = useStore.getState()
     const nodeToRun = reactFlowState.getNode(id)
     reactFlowState.updateNodeData(id, { running: true })
-    const inputEdge = reactFlowState.getEdges("", id)[0]
-    const inputNodeId = inputEdge ? inputEdge.source : null
-    const inputNode = inputNodeId ? reactFlowState.getNode(inputNodeId) : null
-    const input = inputNode ? inputNode.data.output : ""
+
+    const inputEdges = reactFlowState.getEdges("", id)
+    let concatenatedInput = ""
+    for (const inputEdge of inputEdges) {
+      const inputNodeId = inputEdge.source
+      const inputNode = reactFlowState.getNode(inputNodeId)
+      const input = inputNode ? inputNode.data.output : ""
+      concatenatedInput += input + "\n" // Add an empty line between inputs
+    }
 
     const promptToPass = encodeURIComponent(nodeToRun.data.prompt)
-    const inputToPass = encodeURIComponent(input)
+    const inputToPass = encodeURIComponent(concatenatedInput)
     const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/chain_node?prompt=${promptToPass}&input=${inputToPass}`
 
     const response = await fetch(apiUrl)
@@ -56,7 +62,7 @@ export const runChainNode = async (id) => {
 
     const result = await response.json()
     reactFlowState.updateNodeData(id, {
-      input: input,
+      input: concatenatedInput,
       output: result.output,
       running: false,
     })

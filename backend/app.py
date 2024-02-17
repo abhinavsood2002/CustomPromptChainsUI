@@ -20,15 +20,14 @@ CORS(app)
 def run_chain_node():
     prompt = request.args.get('prompt')
     input_ = request.args.get('input')
-    prompt_updated = f"""Use the given input to complete the task
-    ### Task
-    {prompt}
-    ### Input
-    {input_} 
-"""
+    prompt_updated = f"""Use the given input to complete the task:
+### Task
+{prompt}
+### Input
+{input_}"""
     prompt_llm = PromptTemplate.from_template(prompt_updated)
     
-    print(f"Prompt Run: {prompt_updated}")
+    print(f"Prompt Run:\n {prompt_updated}")
 
     llm_chain.prompt = prompt_llm
     output = llm_chain.predict()

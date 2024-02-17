@@ -63,7 +63,11 @@ function ChainNode({ id, data, isConnectable }) {
         bg="white"
       >
         <Center>
-          <VStack divider={<StackDivider borderColor="gray.400" />} spacing={2}>
+          <VStack
+            divider={<StackDivider borderColor="gray.400" />}
+            spacing={2}
+            style={{ whiteSpace: "pre-wrap" }}
+          >
             <Box>
               <HStack spacing={10} margin={1} marginLeft={10}>
                 <Box>Prompt</Box>
@@ -86,8 +90,8 @@ function ChainNode({ id, data, isConnectable }) {
                 placeholder="Enter a prompt to Transform your input"
               />
             </Box>
-            <Box>Input: {input}</Box>
-            <Box>Output: {output}</Box>
+            <Box>Input: {"\n" + input}</Box>
+            <Box>Output: {"\n" + output}</Box>
           </VStack>
         </Center>
       </Box>
