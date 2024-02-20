@@ -7,15 +7,17 @@ import {
   Button,
   HStack,
   Spinner,
+  Image,
 } from "@chakra-ui/react"
 import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
 import { runChainNode } from "../../library/runNodes"
 
-function ChainNode({ id, data, isConnectable }) {
+export default function TextToImageNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [prompt, setPrompt] = React.useState("")
+  const [image, setImage] = React.useState("")
   const [input, setInput] = React.useState("")
   const [output, setOutput] = React.useState("")
   const [isRunning, setIsRunning] = React.useState(false)
@@ -27,6 +29,8 @@ function ChainNode({ id, data, isConnectable }) {
       setInput(currentNode.data.input)
       setOutput(currentNode.data.output)
       setIsRunning(currentNode.data.running)
+      setPrompt(currentNode.data.prompt)
+      setImage(currentNode.data.image)
     }
   }, [reactFlowState, id])
 
@@ -36,8 +40,13 @@ function ChainNode({ id, data, isConnectable }) {
     console.log(id)
   }
 
+  const handleImageChange = (e) => {
+    let imageUrl = e.target.value
+    setImage(imageUrl)
+  }
+
   const handleUpdateState = () => {
-    reactFlowState.updateNodeData(id, { prompt: prompt })
+    reactFlowState.updateNodeData(id, { prompt: prompt, image: image })
   }
 
   return (
@@ -61,7 +70,6 @@ function ChainNode({ id, data, isConnectable }) {
         borderRadius="10px"
         shadow="lg"
         bg="white"
-        w="100%"
       >
         <Center>
           <VStack
@@ -91,6 +99,18 @@ function ChainNode({ id, data, isConnectable }) {
                 placeholder="Enter a prompt to Transform your input"
               />
             </Box>
+            <Box>
+              <HStack spacing={10} margin={1} marginLeft={10}>
+                <Box>Image URL</Box>
+              </HStack>
+              <Textarea
+                value={image}
+                onChange={handleImageChange}
+                onBlur={handleUpdateState}
+                placeholder="Enter the URL of the image"
+              />
+            </Box>
+            {image && <Image src={image} alt="Node Image" />}
             <Box>Input: {"\n" + input}</Box>
             <Box>Output: {"\n" + output}</Box>
           </VStack>
@@ -99,5 +119,3 @@ function ChainNode({ id, data, isConnectable }) {
     </div>
   )
 }
-
-export default ChainNode

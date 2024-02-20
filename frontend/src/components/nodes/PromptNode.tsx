@@ -13,10 +13,9 @@ import { Handle, Position } from "reactflow"
 import useStore from "../../store"
 import { runChainNode } from "../../library/runNodes"
 
-function ChainNode({ id, data, isConnectable }) {
+function PromptNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [prompt, setPrompt] = React.useState("")
-  const [input, setInput] = React.useState("")
   const [output, setOutput] = React.useState("")
   const [isRunning, setIsRunning] = React.useState(false)
 
@@ -24,7 +23,6 @@ function ChainNode({ id, data, isConnectable }) {
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
-      setInput(currentNode.data.input)
       setOutput(currentNode.data.output)
       setIsRunning(currentNode.data.running)
     }
@@ -41,18 +39,12 @@ function ChainNode({ id, data, isConnectable }) {
   }
 
   return (
-    <div className="text-updater-node">
+    <div>
       <Handle
         type="source"
         position={Position.Right}
         isConnectable={isConnectable}
-        style={{ top: 180 }}
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        isConnectable={isConnectable}
-        style={{ top: 145 }}
+        style={{ top: 140 }}
       />
       <Box
         maxW="sm"
@@ -61,7 +53,6 @@ function ChainNode({ id, data, isConnectable }) {
         borderRadius="10px"
         shadow="lg"
         bg="white"
-        w="100%"
       >
         <Center>
           <VStack
@@ -69,7 +60,7 @@ function ChainNode({ id, data, isConnectable }) {
             spacing={2}
             style={{ whiteSpace: "pre-wrap" }}
           >
-            <Box>
+            <Box w="100%">
               <HStack spacing={10} margin={1} marginLeft={10}>
                 <Box>Prompt</Box>
                 <Box>
@@ -84,14 +75,15 @@ function ChainNode({ id, data, isConnectable }) {
                 </Box>
                 <Box>{isRunning && <Spinner />}</Box>
               </HStack>
-              <Textarea
-                value={prompt}
-                onChange={handleInputChange}
-                onBlur={handleUpdateState}
-                placeholder="Enter a prompt to Transform your input"
-              />
+              <Box>
+                <Textarea
+                  value={prompt}
+                  onChange={handleInputChange}
+                  onBlur={handleUpdateState}
+                  placeholder="Enter a prompt to generate output:"
+                />
+              </Box>
             </Box>
-            <Box>Input: {"\n" + input}</Box>
             <Box>Output: {"\n" + output}</Box>
           </VStack>
         </Center>
@@ -100,4 +92,4 @@ function ChainNode({ id, data, isConnectable }) {
   )
 }
 
-export default ChainNode
+export default PromptNode

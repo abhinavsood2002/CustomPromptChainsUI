@@ -22,10 +22,9 @@ function topologicalSort(nodes, edges) {
 
   // Perform BFS
   while (queue.length > 0) {
-    
     queue.sort((a) => {
-      return a.position.x;
-    });
+      return a.position.x
+    })
 
     const currentNode: Node = queue.shift() // Dequeue a node
     result.push(currentNode) // Add node to the result
@@ -76,6 +75,35 @@ export const runChainNode = async (id) => {
     // Handle error, throw, or log it as per your application's requirement
   }
 }
+export const runTextToImage = async (id) => {
+
+}
+
+export const runPromptNode = async (id) => {
+  try {
+    const reactFlowState = useStore.getState()
+    const nodeToRun = reactFlowState.getNode(id)
+    reactFlowState.updateNodeData(id, { running: true })
+
+    const promptToPass = encodeURIComponent(nodeToRun.data.prompt)
+    const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/prompt_node?prompt=${promptToPass}`
+
+    const response = await fetch(apiUrl)
+    if (!response.ok) {
+      throw new Error("Network response was not ok")
+    }
+
+    const result = await response.json()
+    reactFlowState.updateNodeData(id, {
+      output: result.output,
+      running: false,
+    })
+
+  } catch (error) {
+    console.error("Error running node:", error)
+    // Handle error, throw, or log it as per your application's requirement
+  }
+}
 
 export const runNodes = async () => {
   const reactFlowState = useStore.getState()
@@ -85,6 +113,12 @@ export const runNodes = async () => {
   for (const node of runOrder) {
     if (node.type === "chain_node") {
       await runChainNode(node.id)
+    }
+    else if (node.type === "prompt_node") {
+      await runPromptNode(node.id)
+    }
+    else if (node.type === "txt_to_img") {
+      await runTextToImage(node.id)
     }
   }
 }

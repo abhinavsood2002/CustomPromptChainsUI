@@ -25,7 +25,6 @@ import { nanoid } from "nanoid"
 import { runNodes } from "../../library/runNodes"
 import { FaPlay, FaSave } from "react-icons/fa"
 import { NodeTypes } from "../../states/NodeTypes"
-import { group } from "console"
 
 const FlowComponent = () => {
   const reactFlowWrapper = useRef(null)

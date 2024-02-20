@@ -39,5 +39,28 @@ def run_chain_node():
     }
     return response
 
+@app.route('/api/run/prompt_node', methods=['GET'])
+def run_prompt_node():
+    prompt = request.args.get('prompt')
+    prompt_updated = f"""{prompt}
+"""
+    prompt_llm = PromptTemplate.from_template(prompt_updated)
+    
+    print(f"Prompt Run:\n {prompt_updated}")
+
+    llm_chain.prompt = prompt_llm
+    output = llm_chain.predict()
+    llm_chain.prompt = DEFAULT_PROMPT
+    print(output)
+
+    response = {
+        'output': output,
+    }
+    return response
+
+@app.route('/api/run/txt_to_img_node', methods=['GET'])
+def run_txt_to_image_node():
+    prompt = request.args.get('prompt')
+
 if __name__ == '__main__':
     app.run(debug=True)
