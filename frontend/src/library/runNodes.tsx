@@ -48,14 +48,33 @@ export const runChainNode = async (id) => {
 
     const inputEdges = reactFlowState.getEdges("", id)
     let concatenatedInput = ""
+    let concatenatedPrompt = ""
     for (const inputEdge of inputEdges) {
-      const inputNodeId = inputEdge.source
-      const inputNode = reactFlowState.getNode(inputNodeId)
-      const input = inputNode ? inputNode.data.output : ""
-      concatenatedInput += input + "\n" // Add an empty line between inputs
+      if (inputEdge.targetHandle === "input") {
+        const inputNodeId = inputEdge.source
+        const inputNode = reactFlowState.getNode(inputNodeId)
+        const input = inputNode ? inputNode.data.output : ""
+        concatenatedInput += "\n" + input // Add an empty line between inputs
+      } else {
+        const inputNodeId = inputEdge.source
+        const inputNode = reactFlowState.getNode(inputNodeId)
+        const prompt = inputNode ? inputNode.data.output : ""
+        concatenatedPrompt += "\n" + prompt // Add an empty line between inputs
+      }
     }
 
-    const promptToPass = encodeURIComponent(nodeToRun.data.prompt)
+    // Preventing trailing linespace instead, remove the extra one at the start
+    concatenatedInput = concatenatedInput.substring(1)
+    concatenatedPrompt = concatenatedPrompt.substring(1)
+    const promptText =
+      concatenatedPrompt === ""
+        ? nodeToRun.data.prompt === ""
+          ? ""
+          : nodeToRun.data.prompt
+        : nodeToRun.data.prompt === ""
+          ? concatenatedPrompt
+          : nodeToRun.data.prompt + "\n" + concatenatedPrompt
+    const promptToPass = encodeURIComponent(promptText)
     const inputToPass = encodeURIComponent(concatenatedInput)
     const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/chain_node?prompt=${promptToPass}&input=${inputToPass}`
 
@@ -66,6 +85,8 @@ export const runChainNode = async (id) => {
 
     const result = await response.json()
     reactFlowState.updateNodeData(id, {
+      prompt: nodeToRun.data.prompt,
+      promptInput: concatenatedPrompt,
       input: concatenatedInput,
       output: result.output,
       running: false,
@@ -76,7 +97,10 @@ export const runChainNode = async (id) => {
   }
 }
 export const runTextToImage = async (id) => {
-
+  const reactFlowState = useStore.getState()
+  const nodeToRun = reactFlowState.getNode(id)
+  reactFlowState.updateNodeData(id, { running: true })
+  const promptToPass = encodeURIComponent(nodeToRun.data.prompt)
 }
 
 export const runPromptNode = async (id) => {
@@ -85,7 +109,24 @@ export const runPromptNode = async (id) => {
     const nodeToRun = reactFlowState.getNode(id)
     reactFlowState.updateNodeData(id, { running: true })
 
-    const promptToPass = encodeURIComponent(nodeToRun.data.prompt)
+    const inputEdges = reactFlowState.getEdges("", id)
+    let concatenatedPrompt = ""
+    for (const inputEdge of inputEdges) {
+      const inputNodeId = inputEdge.source
+      const inputNode = reactFlowState.getNode(inputNodeId)
+      const prompt = inputNode ? inputNode.data.output : ""
+      concatenatedPrompt += "\n" + prompt // Add an empty line between inputs
+    }
+    concatenatedPrompt = concatenatedPrompt.substring(1)
+    const promptText =
+      concatenatedPrompt === ""
+        ? nodeToRun.data.prompt === ""
+          ? ""
+          : nodeToRun.data.prompt
+        : nodeToRun.data.prompt === ""
+          ? concatenatedPrompt
+          : nodeToRun.data.prompt + "\n" + concatenatedPrompt
+    const promptToPass = encodeURIComponent(promptText)
     const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/prompt_node?prompt=${promptToPass}`
 
     const response = await fetch(apiUrl)
@@ -95,10 +136,11 @@ export const runPromptNode = async (id) => {
 
     const result = await response.json()
     reactFlowState.updateNodeData(id, {
+      prompt: nodeToRun.data.prompt,
+      promptInput: concatenatedPrompt,
       output: result.output,
       running: false,
     })
-
   } catch (error) {
     console.error("Error running node:", error)
     // Handle error, throw, or log it as per your application's requirement
@@ -113,11 +155,9 @@ export const runNodes = async () => {
   for (const node of runOrder) {
     if (node.type === "chain_node") {
       await runChainNode(node.id)
-    }
-    else if (node.type === "prompt_node") {
+    } else if (node.type === "prompt_node") {
       await runPromptNode(node.id)
-    }
-    else if (node.type === "txt_to_img") {
+    } else if (node.type === "txt_to_img") {
       await runTextToImage(node.id)
     }
   }

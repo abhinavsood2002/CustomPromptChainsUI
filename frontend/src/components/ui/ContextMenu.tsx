@@ -12,25 +12,11 @@ const contextMenuSelector = (state) => ({
   deleteNode: state.deleteNode,
 })
 
-export default function ContextMenu({
-  id,
-  top,
-  left,
-  right,
-  bottom,
-  ...props
-}) {
-  const { nodes, edges, duplicateNode, deleteNode } = useStore(
-    contextMenuSelector,
-    shallow,
-  )
+export default function ContextMenu({ id, top, left, right, bottom, ...props }) {
+  const { nodes, edges, duplicateNode, deleteNode } = useStore(contextMenuSelector, shallow)
 
   return (
-    <div
-      style={{ top, left, right, bottom }}
-      className="context-menu"
-      {...props}
-    >
+    <div style={{ top, left, right, bottom }} className="context-menu" {...props}>
       <Menu isOpen>
         <MenuList>
           <MenuItem onClick={() => duplicateNode(id)}>Duplicate</MenuItem>

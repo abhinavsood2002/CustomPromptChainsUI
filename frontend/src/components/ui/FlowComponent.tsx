@@ -6,14 +6,7 @@
 //     .then((data) => setMessage(data.message));
 // }, []);
 import React, { useState, useRef, useCallback } from "react"
-import ReactFlow, {
-  ReactFlowProvider,
-  addEdge,
-  Controls,
-  Connection,
-  Edge,
-  Background,
-} from "reactflow"
+import ReactFlow, { ReactFlowProvider, addEdge, Controls, Connection, Edge, Background } from "reactflow"
 import { Node } from "reactflow"
 import "reactflow/dist/style.css"
 import "../../css/main.css"
@@ -54,8 +47,7 @@ const FlowComponent = () => {
   }
 
   const onConnect = useCallback(
-    (params: Edge | Connection) =>
-      reactFlowState.setEdges(addEdge(params, reactFlowState.edges)),
+    (params: Edge | Connection) => reactFlowState.setEdges(addEdge(params, reactFlowState.edges)),
     [reactFlowState.edges, reactFlowState.setEdges],
   )
 
@@ -126,12 +118,8 @@ const FlowComponent = () => {
           width: maxWidth + 20,
           height: maxHeight + 20,
         }
-        reactFlowState.setNodes(
-          reactFlowState.nodes.concat(newNode, reparameterizedNodes),
-        )
-        reactFlowState.setEdges(
-          reactFlowState.edges.concat(reparameterizedEdges),
-        )
+        reactFlowState.setNodes(reactFlowState.nodes.concat(newNode, reparameterizedNodes))
+        reactFlowState.setEdges(reactFlowState.edges.concat(reparameterizedEdges))
       } else {
         const newNode = {
           id: nanoid(),
@@ -142,12 +130,7 @@ const FlowComponent = () => {
         reactFlowState.setNodes(reactFlowState.nodes.concat(newNode))
       }
     },
-    [
-      reactFlowInstance,
-      reactFlowState.nodes,
-      reactFlowState.setNodes,
-      reactFlowState.setEdges,
-    ],
+    [reactFlowInstance, reactFlowState.nodes, reactFlowState.setNodes, reactFlowState.setEdges],
   )
 
   const onNodeContextMenu = useCallback(
@@ -163,8 +146,7 @@ const FlowComponent = () => {
         top: event.clientY < pane.height - 200 && event.clientY,
         left: event.clientX < pane.width - 200 && event.clientX,
         right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
-        bottom:
-          event.clientY >= pane.height - 200 && pane.height - event.clientY,
+        bottom: event.clientY >= pane.height - 200 && pane.height - event.clientY,
       })
     },
     [setMenu],
@@ -183,11 +165,7 @@ const FlowComponent = () => {
   return (
     <div className="flow-container">
       <ReactFlowProvider>
-        <div
-          className="reactflow-wrapper"
-          ref={reactFlowWrapper}
-          style={{ height: "100vh", width: "100vw" }}
-        >
+        <div className="reactflow-wrapper" ref={reactFlowWrapper} style={{ height: "100vh", width: "100vw" }}>
           <ReactFlow
             ref={ref}
             nodes={reactFlowState.nodes}
@@ -210,20 +188,10 @@ const FlowComponent = () => {
           </ReactFlow>
         </div>
       </ReactFlowProvider>
-      <Button
-        leftIcon={<FaPlay />}
-        colorScheme="blue"
-        onClick={handleRunClick}
-        className="run-button"
-      >
+      <Button leftIcon={<FaPlay />} colorScheme="blue" onClick={handleRunClick} className="run-button">
         Run
       </Button>
-      <Button
-        leftIcon={<FaSave />}
-        colorScheme="teal"
-        onClick={handleSave}
-        className="save-button"
-      >
+      <Button leftIcon={<FaSave />} colorScheme="teal" onClick={handleSave} className="save-button">
         Save
       </Button>
       <Sidebar />

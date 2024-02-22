@@ -1,12 +1,5 @@
 import React, { useCallback, useState } from "react"
-import {
-  Box,
-  Text,
-  VStack,
-  IconButton,
-  Tooltip,
-  Divider,
-} from "@chakra-ui/react"
+import { Box, Text, VStack, IconButton, Tooltip, Divider } from "@chakra-ui/react"
 import { MdFullscreen, MdFullscreenExit } from "react-icons/md"
 import { SidebarState } from "../../states/SidebarState"
 import "../../css/sidebarscrollbar.css"
@@ -14,11 +7,7 @@ const Sidebar = () => {
   const [open, setOpen] = useState(true)
   const [options, setOptions] = useState(SidebarState)
 
-  const onDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    nodeType: string,
-    jsonData: string,
-  ) => {
+  const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string, jsonData: string) => {
     if (nodeType === "template") {
       event.dataTransfer.setData("application/json", jsonData)
     }

@@ -74,9 +74,7 @@ const useStore = create<RFState>((set, get) => ({
     const edges = get().edges // Get the current edges state
 
     if (source && target) {
-      return edges.filter(
-        (edge) => edge.source === source && edge.target === target,
-      )
+      return edges.filter((edge) => edge.source === source && edge.target === target)
     } else if (source) {
       return edges.filter((edge) => edge.source === source)
     } else if (target) {
@@ -101,9 +99,7 @@ const useStore = create<RFState>((set, get) => ({
   deleteNode: (node_id: string) => {
     const this_node = get().nodes.find((node) => node.id === node_id)
     if (this_node.type === "group") {
-      const childrenToRemove = get().nodes.filter(
-        (node) => node.parentNode === node_id,
-      )
+      const childrenToRemove = get().nodes.filter((node) => node.parentNode === node_id)
       console.log(childrenToRemove.length)
       if (childrenToRemove.length > 0) {
         alert(
