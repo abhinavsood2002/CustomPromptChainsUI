@@ -1,5 +1,7 @@
+import { EnvironmentProvider } from "@chakra-ui/react"
 import useStore from "../store"
 import { Node, Edge } from "reactflow"
+import { resourceLimits } from "worker_threads"
 
 function topologicalSort(nodes, edges) {
   const inDegree = {} // Map to store in-degree of each node
@@ -49,7 +51,9 @@ export const runChainNode = async (id) => {
     const inputEdges = reactFlowState.getEdges("", id)
     let concatenatedInput = ""
     let concatenatedPrompt = ""
+
     for (const inputEdge of inputEdges) {
+      // Differentiate between "input" and "prompt" edges
       if (inputEdge.targetHandle === "input") {
         const inputNodeId = inputEdge.source
         const inputNode = reactFlowState.getNode(inputNodeId)
@@ -100,7 +104,39 @@ export const runTextToImage = async (id) => {
   const reactFlowState = useStore.getState()
   const nodeToRun = reactFlowState.getNode(id)
   reactFlowState.updateNodeData(id, { running: true })
-  const promptToPass = encodeURIComponent(nodeToRun.data.prompt)
+  
+  const inputEdges = reactFlowState.getEdges("", id)
+  let concatenatedPrompt = ""
+  for (const inputEdge of inputEdges) {
+    const inputNodeId = inputEdge.source
+    const inputNode = reactFlowState.getNode(inputNodeId)
+    const prompt = inputNode ? inputNode.data.output : ""
+    concatenatedPrompt += "\n" + prompt // Add an empty line between inputs
+  }
+  concatenatedPrompt = concatenatedPrompt.substring(1)
+  const promptText =
+    concatenatedPrompt === ""
+      ? nodeToRun.data.prompt === ""
+        ? ""
+        : nodeToRun.data.prompt
+      : nodeToRun.data.prompt === ""
+        ? concatenatedPrompt
+        : nodeToRun.data.prompt + "\n" + concatenatedPrompt
+  const promptToPass = encodeURIComponent(promptText)
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/txt_to_img_node?prompt=${promptToPass}`
+  
+  const response = await fetch(apiUrl)
+  if (!response.ok) {
+    throw new Error("Network response was not ok")
+  }
+  const image = await response.blob()
+  const imageURL = URL.createObjectURL(image)
+  reactFlowState.updateNodeData(id, {
+    prompt: nodeToRun.data.prompt,
+    image: imageURL,
+    running: false
+  })
+
 }
 
 export const runPromptNode = async (id) => {

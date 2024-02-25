@@ -1,4 +1,4 @@
-import { Box, Center, Textarea, StackDivider, VStack, Button, HStack, Spinner } from "@chakra-ui/react"
+import { Box, Center, Textarea, StackDivider, VStack, Button, HStack, Spinner, Image, Tooltip } from "@chakra-ui/react"
 import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
@@ -8,14 +8,14 @@ import "../../css/handle.css"
 function PromptNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [prompt, setPrompt] = React.useState("")
-  const [output, setOutput] = React.useState("")
+  const [image, setImage] = React.useState("")
   const [isRunning, setIsRunning] = React.useState(false)
 
   useEffect(() => {
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
-      setOutput(currentNode.data.output)
+      setImage(currentNode.data.image)
       setIsRunning(currentNode.data.running)
     }
   }, [reactFlowState, id])
@@ -32,14 +32,16 @@ function PromptNode({ id, data, isConnectable }) {
 
   return (
     <div>
+      <Tooltip label="Connect/Enter a prompt to generate an image">
       <Handle
         className="handle"
         type="target"
         position={Position.Left}
         isConnectable={isConnectable}
-        style={{ top: 70 }}
+        style={{ top: "35%" }}
       />
-      <Box maxW="sm" border="1px" borderColor="gray.400" borderRadius="10px" shadow="lg" bg="white">
+      </Tooltip>
+      <Box maxW="sm" border="1px" borderColor="gray.400" borderRadius="10px" shadow="lg" bg="white" w="100%">
         <Center>
           <VStack divider={<StackDivider borderColor="gray.400" />} spacing={2} style={{ whiteSpace: "pre-wrap" }}>
             <Box w="100%">
@@ -52,7 +54,8 @@ function PromptNode({ id, data, isConnectable }) {
                 </Box>
                 <Box>{isRunning && <Spinner />}</Box>
               </HStack>
-              <Box>
+            </Box>
+            <Box w="95%">
                 <Textarea
                   value={prompt}
                   onChange={handleInputChange}
@@ -60,8 +63,9 @@ function PromptNode({ id, data, isConnectable }) {
                   placeholder="Enter a prompt to generate output:"
                 />
               </Box>
+            <Box margin={2}>Image: 
+              <Image src={image} alt="" w="100%"/>
             </Box>
-            <Box>Image: {"\n" + output}</Box>
           </VStack>
         </Center>
       </Box>
