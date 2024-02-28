@@ -1,8 +1,7 @@
-import { Box, Center, Textarea, StackDivider, VStack, Button, HStack, Spinner, Tooltip } from "@chakra-ui/react"
-import React, { useEffect } from "react"
+import { Box, Center, Textarea, StackDivider, VStack, HStack, Spinner, Tooltip } from "@chakra-ui/react"
+import React from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
-import { runChainNode } from "../../library/runNodes"
 import "../../css/handle.css"
 
 function InputNode({ id, data, isConnectable }) {

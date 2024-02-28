@@ -1,27 +1,17 @@
-import {
-  Box,
-  Center,
-  Textarea,
-  StackDivider,
-  VStack,
-  Button,
-  HStack,
-  Spinner,
-  AbsoluteCenter,
-  Tooltip,
-} from "@chakra-ui/react"
+import { Box, Center, Textarea, StackDivider, VStack, Tooltip } from "@chakra-ui/react"
 import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
 import { runChainNode } from "../../library/runNodes"
 import "../../css/handle.css"
+import StandardNodeHeader from "./StandardNodeHeader"
+
 function ChainNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [prompt, setPrompt] = React.useState("")
   const [promptText, setPromptText] = React.useState("")
   const [input, setInput] = React.useState("")
   const [output, setOutput] = React.useState("")
-  const [isRunning, setIsRunning] = React.useState(false)
 
   useEffect(() => {
     const currentNode = reactFlowState.getNode(id)
@@ -30,7 +20,6 @@ function ChainNode({ id, data, isConnectable }) {
       setPromptText(currentNode.data.promptInput)
       setInput(currentNode.data.input)
       setOutput(currentNode.data.output)
-      setIsRunning(currentNode.data.running)
     }
   }, [reactFlowState, id])
 
@@ -86,15 +75,7 @@ function ChainNode({ id, data, isConnectable }) {
             style={{ whiteSpace: "pre-wrap" }}
             w="100%"
           >
-            <HStack spacing={10} margin={1} marginLeft={10}>
-              <Box>Prompt</Box>
-              <Box>
-                <Button colorScheme="blue" onClick={() => runChainNode(id)} h="20px" w="20px">
-                  Run
-                </Button>
-              </Box>
-              <Box>{isRunning && <Spinner />}</Box>
-            </HStack>
+            <StandardNodeHeader onClick={() => runChainNode(id)} data={data} />
             <VStack w="100%" spacing={0}>
               <Textarea
                 value={prompt}

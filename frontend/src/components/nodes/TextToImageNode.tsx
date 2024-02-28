@@ -1,22 +1,21 @@
-import { Box, Center, Textarea, StackDivider, VStack, Button, HStack, Spinner, Image, Tooltip } from "@chakra-ui/react"
+import { Box, Center, Textarea, StackDivider, VStack, Image, Tooltip } from "@chakra-ui/react"
 import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
 import { runTextToImage } from "../../library/runNodes"
+import StandardNodeHeader from "./StandardNodeHeader"
 import "../../css/handle.css"
 
 function PromptNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [prompt, setPrompt] = React.useState("")
   const [image, setImage] = React.useState("")
-  const [isRunning, setIsRunning] = React.useState(false)
 
   useEffect(() => {
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
       setImage(currentNode.data.image)
-      setIsRunning(currentNode.data.running)
     }
   }, [reactFlowState, id])
 
@@ -45,15 +44,7 @@ function PromptNode({ id, data, isConnectable }) {
         <Center>
           <VStack divider={<StackDivider borderColor="gray.400" />} spacing={2} style={{ whiteSpace: "pre-wrap" }}>
             <Box w="100%">
-              <HStack spacing={10} margin={1} marginLeft={10}>
-                <Box>Prompt</Box>
-                <Box>
-                  <Button colorScheme="blue" onClick={() => runTextToImage(id)} h="20px" w="20px">
-                    Run
-                  </Button>
-                </Box>
-                <Box>{isRunning && <Spinner />}</Box>
-              </HStack>
+              <StandardNodeHeader data={data} onClick={() => runTextToImage(id)} />
             </Box>
             <Box w="95%">
               <Textarea

@@ -3,6 +3,7 @@ import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
 import { runChainNode } from "../../library/runNodes"
+import StandardNodeHeader from "./StandardNodeHeader"
 import "../../css/handle.css"
 
 function PromptNode({ id, data, isConnectable }) {
@@ -10,15 +11,14 @@ function PromptNode({ id, data, isConnectable }) {
   const [prompt, setPrompt] = React.useState("")
   const [promptText, setPromptText] = React.useState("")
   const [output, setOutput] = React.useState("")
-  const [isRunning, setIsRunning] = React.useState(false)
 
   useEffect(() => {
+    console.log(data)
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
       setPromptText(currentNode.data.promptInput)
       setOutput(currentNode.data.output)
-      setIsRunning(currentNode.data.running)
     }
   }, [reactFlowState, id])
 
@@ -60,15 +60,8 @@ function PromptNode({ id, data, isConnectable }) {
             style={{ whiteSpace: "pre-wrap" }}
             w="100%"
           >
-            <HStack spacing={10} margin={1} marginLeft={10}>
-              <Box>Prompt</Box>
-              <Box>
-                <Button colorScheme="blue" onClick={() => runChainNode(id)} h="20px" w="20px">
-                  Run
-                </Button>
-              </Box>
-              <Box>{isRunning && <Spinner />}</Box>
-            </HStack>
+            <StandardNodeHeader data={data} onClick={() => runChainNode(id)} />
+
             <VStack spacing={0} w="100">
               <Textarea
                 value={prompt}
