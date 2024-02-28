@@ -9,6 +9,7 @@ import "../../css/handle.css"
 function PromptNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [prompt, setPrompt] = React.useState("")
+  const [promptText, setPromptText] = React.useState("")
   const [image, setImage] = React.useState("")
 
   useEffect(() => {

@@ -40,7 +40,7 @@ export default function StandardNodeHeader({ data, onClick }) {
           Run
         </Button>
       </Box>
-      <Box>{data.isRunning && <Spinner />}</Box>
+      <Box>{data.running && <Spinner />}</Box>
 
       <Modal isOpen={isOpen} onClose={handleCloseModal} size="xxl">
         <ModalOverlay />

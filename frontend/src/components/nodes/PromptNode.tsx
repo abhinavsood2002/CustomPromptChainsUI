@@ -62,13 +62,13 @@ function PromptNode({ id, data, isConnectable }) {
           >
             <StandardNodeHeader data={data} onClick={() => runChainNode(id)} />
 
-            <VStack spacing={0} w="100">
+            <VStack spacing={0} w="100%">
               <Textarea
                 value={prompt}
                 onChange={handleInputChange}
                 onBlur={handleUpdateState}
                 placeholder="Enter a prompt to generate output:"
-                w="100%"
+                w="95%"
               />
               <Box w="100%">Additional text added to prompt: {promptText && "\n" + promptText}</Box>
             </VStack>
