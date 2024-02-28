@@ -77,7 +77,7 @@ function PromptNode({ id, data, isConnectable }) {
                 placeholder="Enter a prompt to generate output:"
                 w="100%"
               />
-              <Box w="100%">{promptText && "\n" + promptText}</Box>
+              <Box w="100%">Additional text added to prompt: {promptText && "\n" + promptText}</Box>
             </VStack>
 
             <Box w="100%">Output: {"\n" + output}</Box>

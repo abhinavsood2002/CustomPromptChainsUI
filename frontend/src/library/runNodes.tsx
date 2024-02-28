@@ -104,7 +104,7 @@ export const runTextToImage = async (id) => {
   const reactFlowState = useStore.getState()
   const nodeToRun = reactFlowState.getNode(id)
   reactFlowState.updateNodeData(id, { running: true })
-  
+
   const inputEdges = reactFlowState.getEdges("", id)
   let concatenatedPrompt = ""
   for (const inputEdge of inputEdges) {
@@ -124,7 +124,7 @@ export const runTextToImage = async (id) => {
         : nodeToRun.data.prompt + "\n" + concatenatedPrompt
   const promptToPass = encodeURIComponent(promptText)
   const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/txt_to_img_node?prompt=${promptToPass}`
-  
+
   const response = await fetch(apiUrl)
   if (!response.ok) {
     throw new Error("Network response was not ok")
@@ -134,9 +134,8 @@ export const runTextToImage = async (id) => {
   reactFlowState.updateNodeData(id, {
     prompt: nodeToRun.data.prompt,
     image: imageURL,
-    running: false
+    running: false,
   })
-
 }
 
 export const runPromptNode = async (id) => {

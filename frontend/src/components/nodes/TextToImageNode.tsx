@@ -33,13 +33,13 @@ function PromptNode({ id, data, isConnectable }) {
   return (
     <div>
       <Tooltip label="Connect/Enter a prompt to generate an image">
-      <Handle
-        className="handle"
-        type="target"
-        position={Position.Left}
-        isConnectable={isConnectable}
-        style={{ top: "35%" }}
-      />
+        <Handle
+          className="handle"
+          type="target"
+          position={Position.Left}
+          isConnectable={isConnectable}
+          style={{ top: "35%" }}
+        />
       </Tooltip>
       <Box maxW="sm" border="1px" borderColor="gray.400" borderRadius="10px" shadow="lg" bg="white" w="100%">
         <Center>
@@ -56,15 +56,16 @@ function PromptNode({ id, data, isConnectable }) {
               </HStack>
             </Box>
             <Box w="95%">
-                <Textarea
-                  value={prompt}
-                  onChange={handleInputChange}
-                  onBlur={handleUpdateState}
-                  placeholder="Enter a prompt to generate output:"
-                />
-              </Box>
-            <Box margin={2}>Image: 
-              <Image src={image} alt="" w="100%"/>
+              <Textarea
+                value={prompt}
+                onChange={handleInputChange}
+                onBlur={handleUpdateState}
+                placeholder="Enter a prompt to generate output:"
+              />
+            </Box>
+            <Box margin={2}>
+              Image:
+              <Image src={image} alt="" w="100%" />
             </Box>
           </VStack>
         </Center>
