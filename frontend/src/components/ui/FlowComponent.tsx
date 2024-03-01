@@ -201,7 +201,13 @@ const FlowComponent = () => {
         Save
       </Button>
       <Sidebar />
-      <DeletionAlert isOpen={isOpen} onClose={onClose} onOpen={onOpen} cancelRef={cancelRef} onClickYes={reactFlowState.deleteAllNodes}/>
+      <DeletionAlert
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpen={onOpen}
+        cancelRef={cancelRef}
+        onClickYes={reactFlowState.deleteAllNodes}
+      />
     </div>
   )
 }

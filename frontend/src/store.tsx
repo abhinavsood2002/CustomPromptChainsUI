@@ -119,10 +119,10 @@ const useStore = create<RFState>((set, get) => ({
       })
     }
   },
-  
+
   deleteAllNodes: () => {
-    set({nodes: [], edges: []})
-  }, 
+    set({ nodes: [], edges: [] })
+  },
 
   deleteEdge: (edge_id: string) => {
     set({
