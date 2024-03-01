@@ -100,6 +100,11 @@ const Sidebar = () => {
                 {option}
               </Box>
             ))}
+            {optionGroup.options.length === 0 && (
+              <Box bg="gray.600" color="white" p={2} borderRadius="md" mt={2}>
+                No Custom templates added yet, drag in compatible ".json" files to use Custom Templates.s
+              </Box>
+            )}
           </VStack>
         ))}
       </VStack>

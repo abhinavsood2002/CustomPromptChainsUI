@@ -6,7 +6,7 @@ export const SidebarState = [
   },
 
   {
-    heading: "Drag in Templates",
+    heading: "Custom Templates",
     options: [],
     options_type: [],
     options_template: [],
