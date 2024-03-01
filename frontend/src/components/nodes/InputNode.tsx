@@ -29,10 +29,10 @@ function InputNode({ id, data, isConnectable }) {
           style={{ position: "absolute", top: "50%", background: "red" }}
         />
       </Tooltip>
-      <Box maxW="sm" border="1px" borderColor="gray.400" borderRadius="10px" shadow="lg" bg="white" w="100%">
+      <Box maxW="sm" border="1px" borderColor="gray.700" borderRadius="10px" shadow="lg" bg="white" w="100%">
         <Center>
           <VStack
-            divider={<StackDivider w="100%" borderColor="gray.400" />}
+            divider={<StackDivider w="100%" borderColor="gray.700" />}
             spacing={2}
             style={{ whiteSpace: "pre-wrap" }}
             w="100%"

@@ -133,6 +133,7 @@ export const runTextToImage = async (id) => {
   const imageURL = URL.createObjectURL(image)
   reactFlowState.updateNodeData(id, {
     prompt: nodeToRun.data.prompt,
+    promptInput: concatenatedPrompt,
     image: imageURL,
     running: false,
   })

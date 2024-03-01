@@ -16,6 +16,7 @@ DEFAULT_PROMPT = "RETURN ERROR"
 model_path = "models/tiny-llama-openhermes-1.1b-step-715k-1.5t.q4_k_m.gguf"
 context_window = 1000
 llm = LlamaCpp(model_path=model_path, verbose=False, f16_kv=True, n_ctx = context_window)
+
 llm_chain = LLMChain(
     llm=llm,
     prompt = PromptTemplate.from_template(DEFAULT_PROMPT),

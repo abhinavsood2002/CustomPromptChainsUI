@@ -16,6 +16,7 @@ function PromptNode({ id, data, isConnectable }) {
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
+      setPromptText(currentNode.data.promptInput)
       setImage(currentNode.data.image)
     }
   }, [reactFlowState, id])
@@ -41,20 +42,22 @@ function PromptNode({ id, data, isConnectable }) {
           style={{ top: "35%" }}
         />
       </Tooltip>
-      <Box maxW="sm" border="1px" borderColor="gray.400" borderRadius="10px" shadow="lg" bg="white" w="100%">
+      <Box maxW="sm" border="1px" borderColor="gray.700" borderRadius="10px" shadow="lg" bg="white" w="100%">
         <Center>
-          <VStack divider={<StackDivider borderColor="gray.400" />} spacing={2} style={{ whiteSpace: "pre-wrap" }}>
+          <VStack divider={<StackDivider borderColor="gray.700" />} spacing={2} style={{ whiteSpace: "pre-wrap" }}>
             <Box w="100%">
               <StandardNodeHeader data={data} onClick={() => runTextToImage(id)} />
             </Box>
-            <Box w="95%">
+            <VStack spacing={0} w="100%">
               <Textarea
                 value={prompt}
                 onChange={handleInputChange}
                 onBlur={handleUpdateState}
                 placeholder="Enter a prompt to generate output:"
+                w="95%"
               />
-            </Box>
+              <Box w="100%">Additional text added to prompt: {promptText && "\n" + promptText}</Box>
+            </VStack>
             <Box margin={2}>
               Image:
               <Image src={image} alt="" w="100%" />

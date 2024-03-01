@@ -67,10 +67,10 @@ function ChainNode({ id, data, isConnectable }) {
         />
       </Tooltip>
 
-      <Box maxW="sm" border="1px" borderColor="gray.400" borderRadius="10px" shadow="lg" bg="white" w="100%">
+      <Box maxW="sm" border="1px" borderColor="gray.700" borderRadius="10px" shadow="lg" bg="white" w="100%">
         <Center>
           <VStack
-            divider={<StackDivider borderColor="gray.400" />}
+            divider={<StackDivider borderColor="gray.700" />}
             spacing={2}
             style={{ whiteSpace: "pre-wrap" }}
             w="100%"
