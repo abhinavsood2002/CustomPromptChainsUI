@@ -48,7 +48,7 @@ export default function StandardNodeHeader({ data, onClick }) {
           <ModalHeader>Node Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Box overflowY="auto">
+            <Box overflowY="auto" style={{ whiteSpace: "pre-wrap" }}>
               {Object.entries(data)
                 .filter(([key]) => key !== "running")
                 .map(([key, value]) => (

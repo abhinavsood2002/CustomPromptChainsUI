@@ -6,22 +6,25 @@
 //     .then((data) => setMessage(data.message));
 // }, []);
 import React, { useState, useRef, useCallback } from "react"
-import ReactFlow, { ReactFlowProvider, addEdge, Controls, Connection, Edge, Background } from "reactflow"
+import ReactFlow, { ReactFlowProvider, addEdge, Controls, Connection, Edge, Background, MiniMap } from "reactflow"
 import { Node } from "reactflow"
 import "reactflow/dist/style.css"
 import "../../css/main.css"
 import Sidebar from "./Sidebar"
-import { Button } from "@chakra-ui/react"
+import { Button, useDisclosure } from "@chakra-ui/react"
 import ContextMenu from "./ContextMenu"
 import useStore from "../../store"
 import { nanoid } from "nanoid"
 import { runNodes } from "../../library/runNodes"
-import { FaPlay, FaSave } from "react-icons/fa"
-import { NodeTypes } from "../../states/NodeTypes"
+import { FaPlay, FaSave, FaTrash } from "react-icons/fa"
+import { NodeTypes, nodeMinimapColors } from "../../states/NodeTypes"
+import DeletionAlert from "./ DeletionAlert"
 
 const FlowComponent = () => {
   const reactFlowWrapper = useRef(null)
   const reactFlowState = useStore()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef()
   const [reactFlowInstance, setReactFlowInstance] = useState(null)
   const [menu, setMenu] = useState(null)
   const ref = useRef(null)
@@ -180,14 +183,17 @@ const FlowComponent = () => {
             onPaneClick={onPaneClick}
             onEdgeDoubleClick={onEdgeDoubleClick}
             nodeTypes={NodeTypes}
-            fitView
           >
             <Background />
             {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
             <Controls position="bottom-right" />
+            <MiniMap nodeColor={nodeMinimapColors} position="bottom-center" zoomable={true} pannable={true} />
           </ReactFlow>
         </div>
       </ReactFlowProvider>
+      <Button leftIcon={<FaTrash />} colorScheme="red" onClick={onOpen} className="delete-button">
+        Delete All Nodes
+      </Button>
       <Button leftIcon={<FaPlay />} colorScheme="blue" onClick={handleRunClick} className="run-button">
         Run
       </Button>
@@ -195,6 +201,7 @@ const FlowComponent = () => {
         Save
       </Button>
       <Sidebar />
+      <DeletionAlert isOpen={isOpen} onClose={onClose} onOpen={onOpen} cancelRef={cancelRef} onClickYes={reactFlowState.deleteAllNodes}/>
     </div>
   )
 }

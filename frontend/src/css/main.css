@@ -84,3 +84,10 @@
   right: 120px;
   z-index: 0;
 }
+
+.flow-container .delete-button {
+  position: fixed;
+  top: 20px;
+  right: 280px;
+  z-index: 0;
+}

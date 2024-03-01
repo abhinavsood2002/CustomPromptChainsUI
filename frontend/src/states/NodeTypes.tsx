@@ -9,3 +9,18 @@ export const NodeTypes = {
   prompt_node: PromptNode,
   input_node: InputNode,
 }
+
+export function nodeMinimapColors(node) {
+  switch (node.type) {
+    case 'chain_node':
+      return '#6ede87';
+    case 'txt_to_img':
+      return '#6865A5';
+    case 'prompt_node':
+      return '#1365A5';
+    case "input_node":
+      return '#A12313';
+    default:
+      return '#ff0072';
+  }
+}

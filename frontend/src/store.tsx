@@ -20,7 +20,7 @@ type SetEdges = (edges: Edge[]) => void
 type UpdateNodeData = (node_id: string, newData: Object) => void
 type GetNode = (node_id: string) => Node
 type GetEdges = (source?: string, target?: string) => Edge[]
-
+type DeleteAllNodes = () => void
 export type RFState = {
   nodes: Node[]
   edges: Edge[]
@@ -34,6 +34,7 @@ export type RFState = {
   deleteNode: DeleteNode
   deleteEdge: DeleteEdge
   duplicateNode: DuplicateNode
+  deleteAllNodes: DeleteAllNodes
 }
 
 const useStore = create<RFState>((set, get) => ({
@@ -118,6 +119,10 @@ const useStore = create<RFState>((set, get) => ({
       })
     }
   },
+  
+  deleteAllNodes: () => {
+    set({nodes: [], edges: []})
+  }, 
 
   deleteEdge: (edge_id: string) => {
     set({
