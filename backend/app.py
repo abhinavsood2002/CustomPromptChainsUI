@@ -3,6 +3,8 @@ from flask_cors import CORS
 import torch
 from diffusers import StableDiffusionPipeline
 import io
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 
 ## Initialise text to image model
 model_id = "CompVis/stable-diffusion-v1-4"
@@ -16,11 +18,12 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto")
 
 def run_prompt(prompt, temperature):
+    do_sample = temperature != 0
     messages = [
-    {"role": "user", "content": prompt_updated},
+    {"role": "user", "content": prompt},
     ]
     inputs = tokenizer.apply_chat_template(messages, return_tensors="pt").to("cuda")
-    outputs = model.generate(inputs, do_sample=True, temperature=temperature, top_p=0.9, max_new_tokens=5000)
+    outputs = model.generate(inputs, do_sample=do_sample, temperature=temperature, top_p=0.9, max_new_tokens=5000)
     prompt_length = inputs[0].shape[0]
     output = tokenizer.decode(outputs[0][prompt_length:], skip_special_tokens=True)
     return output
@@ -33,16 +36,15 @@ def run_chain_node():
     prompt = request.args.get('prompt')
     input_ = request.args.get('input')
     temperature = float(request.args.get('temperature'))
-    textLength = request.args.get('outputLength')
+    textLength = request.args.get('length')
     prompt_updated = f"""Use the given context to complete the given instruction. Make your {textLength} answer in length.
 Task:
 {prompt}
 
 Context:
 {input_}"""
-    output = run_prompt(prompt_updated, temperature)
-    
     print(f"Prompt Run:\n {prompt_updated}")
+    output = run_prompt(prompt_updated, temperature)
     print(output)
 
     response = {
@@ -54,12 +56,11 @@ Context:
 def run_prompt_node():
     prompt = request.args.get('prompt')
     temperature = float(request.args.get('temperature'))
-    textLength = request.args.get('outputLength')
-    prompt_updated = f"""{prompt} Make your answer {outputLength} in length.
+    textLength = request.args.get('length')
+    prompt_updated = f"""{prompt} Make your answer {textLength} in length.
 """
-    output = run_prompt(prompt_updated, temperature)
-    
     print(f"Prompt Run:\n {prompt_updated}")
+    output = run_prompt(prompt_updated, temperature)
     print(output)
 
     response = {
@@ -77,4 +78,4 @@ def run_txt_to_image_node():
     return send_file(img_io, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
