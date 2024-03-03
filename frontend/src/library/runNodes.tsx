@@ -80,7 +80,13 @@ export const runChainNode = async (id) => {
           : nodeToRun.data.prompt + "\n" + concatenatedPrompt
     const promptToPass = encodeURIComponent(promptText)
     const inputToPass = encodeURIComponent(concatenatedInput)
-    const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/chain_node?prompt=${promptToPass}&input=${inputToPass}`
+    const temperatureToPass = encodeURIComponent(nodeToRun.data.temperature)
+    const lengthToPass = encodeURIComponent(nodeToRun.data.outputLength)
+    const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/chain_node?
+      prompt=${promptToPass}
+      &input=${inputToPass}
+      &temperature=${temperatureToPass}
+      &length=${lengthToPass}`
 
     const response = await fetch(apiUrl)
     if (!response.ok) {
@@ -123,7 +129,9 @@ export const runTextToImage = async (id) => {
         ? concatenatedPrompt
         : nodeToRun.data.prompt + "\n" + concatenatedPrompt
   const promptToPass = encodeURIComponent(promptText)
-  const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/txt_to_img_node?prompt=${promptToPass}`
+
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/txt_to_img_node?
+    prompt=${promptToPass}`
 
   const response = await fetch(apiUrl)
   if (!response.ok) {
@@ -162,8 +170,13 @@ export const runPromptNode = async (id) => {
         : nodeToRun.data.prompt === ""
           ? concatenatedPrompt
           : nodeToRun.data.prompt + "\n" + concatenatedPrompt
+    const temperatureToPass = encodeURIComponent(nodeToRun.data.temperature)
+    const lengthToPass = encodeURIComponent(nodeToRun.data.outputLength)
     const promptToPass = encodeURIComponent(promptText)
-    const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/prompt_node?prompt=${promptToPass}`
+    const apiUrl = `${process.env.REACT_APP_API_URL}/api/run/prompt_node?
+      prompt=${promptToPass}
+      &temperature=${temperatureToPass}
+      &length=${lengthToPass}`
 
     const response = await fetch(apiUrl)
     if (!response.ok) {

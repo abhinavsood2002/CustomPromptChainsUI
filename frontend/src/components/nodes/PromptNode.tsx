@@ -2,7 +2,7 @@ import { Box, Center, Textarea, StackDivider, VStack, Button, HStack, Spinner, T
 import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
-import { runChainNode } from "../../library/runNodes"
+import { runPromptNode } from "../../library/runNodes"
 import StandardNodeHeader from "./StandardNodeHeader"
 import "../../css/handle.css"
 
@@ -11,6 +11,12 @@ function PromptNode({ id, data, isConnectable }) {
   const [prompt, setPrompt] = React.useState("")
   const [promptText, setPromptText] = React.useState("")
   const [output, setOutput] = React.useState("")
+  const [temperature, setTemperature] = React.useState(0)
+  const [outputLength, setOutputLength] = React.useState("very short")
+
+  useEffect(() => {
+    reactFlowState.updateNodeData(id, { temperature: temperature, outputLength: outputLength })
+  }, [])
 
   useEffect(() => {
     console.log(data)
@@ -30,6 +36,9 @@ function PromptNode({ id, data, isConnectable }) {
 
   const handleUpdateState = () => {
     reactFlowState.updateNodeData(id, { prompt: prompt })
+  }
+  const handleUpdateFromAdvancedMenu = () => {
+    reactFlowState.updateNodeData(id, { temperature: temperature, outputLength: outputLength })
   }
 
   return (
@@ -60,7 +69,15 @@ function PromptNode({ id, data, isConnectable }) {
             style={{ whiteSpace: "pre-wrap" }}
             w="100%"
           >
-            <StandardNodeHeader data={data} onClick={() => runChainNode(id)} />
+            <StandardNodeHeader
+              data={data}
+              onClick={() => runPromptNode(id)}
+              temperature={temperature}
+              outputLength={outputLength}
+              handleUpdateState={handleUpdateFromAdvancedMenu}
+              setTemperature={setTemperature}
+              setOutputLength={setOutputLength}
+            />
 
             <VStack spacing={0} w="100%">
               <Textarea

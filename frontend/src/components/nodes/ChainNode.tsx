@@ -12,6 +12,12 @@ function ChainNode({ id, data, isConnectable }) {
   const [promptText, setPromptText] = React.useState("")
   const [input, setInput] = React.useState("")
   const [output, setOutput] = React.useState("")
+  const [temperature, setTemperature] = React.useState(0)
+  const [outputLength, setOutputLength] = React.useState("very short")
+
+  useEffect(() => {
+    reactFlowState.updateNodeData(id, { temperature: temperature, outputLength: outputLength })
+  }, [])
 
   useEffect(() => {
     const currentNode = reactFlowState.getNode(id)
@@ -31,6 +37,9 @@ function ChainNode({ id, data, isConnectable }) {
 
   const handleUpdateState = () => {
     reactFlowState.updateNodeData(id, { prompt: prompt })
+  }
+  const handleUpdateFromAdvancedMenu = () => {
+    reactFlowState.updateNodeData(id, { temperature: temperature, outputLength: outputLength })
   }
 
   return (
@@ -75,7 +84,15 @@ function ChainNode({ id, data, isConnectable }) {
             style={{ whiteSpace: "pre-wrap" }}
             w="100%"
           >
-            <StandardNodeHeader onClick={() => runChainNode(id)} data={data} />
+            <StandardNodeHeader
+              data={data}
+              onClick={() => runChainNode(id)}
+              temperature={temperature}
+              outputLength={outputLength}
+              handleUpdateState={handleUpdateFromAdvancedMenu}
+              setTemperature={setTemperature}
+              setOutputLength={setOutputLength}
+            />
             <VStack w="100%" spacing={0}>
               <Textarea
                 value={prompt}
