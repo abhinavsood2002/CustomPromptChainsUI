@@ -11,7 +11,7 @@ pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float
 pipe = pipe.to(device)
 
 ## Intialise Large language model
-model_id = "mistralai/Mixtral-8x7B-Instruct-v0.2"
+model_id = "mistralai/Mistral-7B-Instruct-v0.2"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto")
 
