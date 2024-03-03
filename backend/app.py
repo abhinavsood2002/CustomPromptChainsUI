@@ -1,26 +1,32 @@
 from flask import Flask, request, send_file
-from langchain.llms import LlamaCpp
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
 from flask_cors import CORS
 import torch
 from diffusers import StableDiffusionPipeline
 import io
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
+
+## Initialise text to image model
 model_id = "CompVis/stable-diffusion-v1-4"
 device = "cuda"
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
 pipe = pipe.to(device)
 
-DEFAULT_PROMPT = "RETURN ERROR"
-model_path = "models/tiny-llama-openhermes-1.1b-step-715k-1.5t.q4_k_m.gguf"
-context_window = 1000
-llm = LlamaCpp(model_path=model_path, verbose=False, f16_kv=True, n_ctx = context_window)
+## Intialise Large language model
+model_id = "mistralai/Mistral-7B-Instruct-v0.2"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto")
 
-llm_chain = LLMChain(
-    llm=llm,
-    prompt = PromptTemplate.from_template(DEFAULT_PROMPT),
-)
+def run_prompt(prompt, temperature):
+    do_sample = temperature != 0
+    messages = [
+    {"role": "user", "content": prompt},
+    ]
+    inputs = tokenizer.apply_chat_template(messages, return_tensors="pt").to("cuda")
+    outputs = model.generate(inputs, do_sample=do_sample, temperature=temperature, top_p=0.9, max_new_tokens=5000)
+    prompt_length = inputs[0].shape[0]
+    output = tokenizer.decode(outputs[0][prompt_length:], skip_special_tokens=True)
+    return output
 
 app = Flask(__name__)
 CORS(app)
@@ -29,18 +35,16 @@ CORS(app)
 def run_chain_node():
     prompt = request.args.get('prompt')
     input_ = request.args.get('input')
-    prompt_updated = f"""Use the given input to complete the task:
-### Task
+    temperature = float(request.args.get('temperature'))
+    textLength = request.args.get('length')
+    prompt_updated = f"""Use the given context to complete the given instruction. Make your {textLength} answer in length.
+Task:
 {prompt}
-### Input
-{input_}"""
-    prompt_llm = PromptTemplate.from_template(prompt_updated)
-    
-    print(f"Prompt Run:\n {prompt_updated}")
 
-    llm_chain.prompt = prompt_llm
-    output = llm_chain.predict()
-    llm_chain.prompt = DEFAULT_PROMPT
+Context:
+{input_}"""
+    print(f"Prompt Run:\n {prompt_updated}")
+    output = run_prompt(prompt_updated, temperature)
     print(output)
 
     response = {
@@ -51,15 +55,12 @@ def run_chain_node():
 @app.route('/api/run/prompt_node', methods=['GET'])
 def run_prompt_node():
     prompt = request.args.get('prompt')
-    prompt_updated = f"""{prompt}
+    temperature = float(request.args.get('temperature'))
+    textLength = request.args.get('length')
+    prompt_updated = f"""{prompt} Make your answer {textLength} in length.
 """
-    prompt_llm = PromptTemplate.from_template(prompt_updated)
-    
     print(f"Prompt Run:\n {prompt_updated}")
-
-    llm_chain.prompt = prompt_llm
-    output = llm_chain.predict()
-    llm_chain.prompt = DEFAULT_PROMPT
+    output = run_prompt(prompt_updated, temperature)
     print(output)
 
     response = {
@@ -77,4 +78,4 @@ def run_txt_to_image_node():
     return send_file(img_io, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
