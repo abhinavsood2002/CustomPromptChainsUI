@@ -7,7 +7,7 @@
 // }, []);
 import React, { useState, useRef, useCallback } from "react"
 import ReactFlow, { ReactFlowProvider, addEdge, Controls, Connection, Edge, Background, MiniMap } from "reactflow"
-import { Node } from "reactflow"
+import { Node, getNodesBounds } from "reactflow"
 import "reactflow/dist/style.css"
 import "../../css/main.css"
 import Sidebar from "./Sidebar"
@@ -18,6 +18,7 @@ import { nanoid } from "nanoid"
 import { runNodes } from "../../library/runNodes"
 import { FaPlay, FaSave, FaTrash } from "react-icons/fa"
 import { NodeTypes, nodeMinimapColors } from "../../states/NodeTypes"
+
 import DeletionAlert from "./ DeletionAlert"
 
 const FlowComponent = () => {
@@ -84,29 +85,27 @@ const FlowComponent = () => {
           position,
           data: {},
         }
-        var maxWidth = 0
-        var maxHeight = 0
+
         const jsonStringData = event.dataTransfer.getData("application/json")
         const { nodes, edges } = JSON.parse(jsonStringData)
         // Reparameterize custom node ids so that duplicates can be added to flow
         const idMapping = {}
-
+        const maxX = nodes.reduce((max, node) => Math.min(max, node.position.x), Infinity)
+        const maxY = nodes.reduce((max, node) => Math.min(max, node.position.y), Infinity)
         const reparameterizedNodes = nodes.map((node) => {
           const newId = nanoid()
           const newPosition = {
-            x: node.position.x - nodes[0].position.x + 20,
-            y: node.position.y - nodes[0].position.y + 20,
+            x: node.position.x - maxX,
+            y: node.position.y - maxY,
           }
-          maxHeight = Math.max(newPosition.y + node.height, maxHeight)
-          maxWidth = Math.max(newPosition.x + node.width, maxWidth)
-          console.log(newPosition)
-          console.log(position)
+
           idMapping[node.id] = newId
           return {
             ...node,
             id: newId,
             parentNode: newNode.id,
             position: newPosition,
+            data: { ...node.data, running: false },
           }
         })
 
@@ -117,9 +116,15 @@ const FlowComponent = () => {
           target: idMapping[edge.target],
         }))
 
+        const bounds = getNodesBounds(reparameterizedNodes)
+        console.log(bounds)
+        newNode.position = {
+          x: bounds.x,
+          y: bounds.y,
+        }
         newNode.style = {
-          width: maxWidth + 20,
-          height: maxHeight + 20,
+          width: bounds.width + 200,
+          height: bounds.height + 200,
         }
         reactFlowState.setNodes(reactFlowState.nodes.concat(newNode, reparameterizedNodes))
         reactFlowState.setEdges(reactFlowState.edges.concat(reparameterizedEdges))
