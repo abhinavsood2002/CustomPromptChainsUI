@@ -87,9 +87,11 @@ const FlowComponent = () => {
         }
 
         const jsonStringData = event.dataTransfer.getData("application/json")
-        const { nodes, edges } = JSON.parse(jsonStringData)
+        const { nodes: nodes_before_filter, edges } = JSON.parse(jsonStringData)
+        const nodes = nodes_before_filter.filter((node) => node.type !== "group")
         // Reparameterize custom node ids so that duplicates can be added to flow
         const idMapping = {}
+
         const maxX = nodes.reduce((max, node) => Math.min(max, node.position.x), Infinity)
         const maxY = nodes.reduce((max, node) => Math.min(max, node.position.y), Infinity)
         const reparameterizedNodes = nodes.map((node) => {
