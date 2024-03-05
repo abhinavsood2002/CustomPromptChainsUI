@@ -114,6 +114,7 @@ const FlowComponent = () => {
           id: nanoid(),
           source: idMapping[edge.source],
           target: idMapping[edge.target],
+          zIndex: -100,
         }))
 
         const bounds = getNodesBounds(reparameterizedNodes)

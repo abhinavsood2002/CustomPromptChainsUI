@@ -15,14 +15,22 @@ function PromptNode({ id, data, isConnectable }) {
   const [outputLength, setOutputLength] = React.useState("very short")
 
   useEffect(() => {
-    reactFlowState.updateNodeData(id, { temperature: temperature, outputLength: outputLength })
+    if (!data.outputLength) {
+      reactFlowState.updateNodeData(id, {
+        temperature: temperature,
+        outputLength: outputLength,
+      })
+    } else {
+      setTemperature(data.temperature)
+      setOutputLength(data.outputLength)
+    }
   }, [])
 
   useEffect(() => {
-    console.log(data)
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
+      setPrompt(currentNode.data.prompt)
       setPromptText(currentNode.data.promptInput)
       setOutput(currentNode.data.output)
     }

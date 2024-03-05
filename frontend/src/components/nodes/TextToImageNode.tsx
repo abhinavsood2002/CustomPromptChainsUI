@@ -16,6 +16,7 @@ function PromptNode({ id, data, isConnectable }) {
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
+      setPrompt(currentNode.data.prompt)
       setPromptText(currentNode.data.promptInput)
       setImage(currentNode.data.image)
     }

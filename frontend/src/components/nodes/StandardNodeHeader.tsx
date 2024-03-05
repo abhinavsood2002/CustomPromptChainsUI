@@ -143,10 +143,13 @@ export default function StandardNodeHeader({
                     <Text as="h4" fontSize="xl" fontWeight="bold" mb="2">
                       {key}
                     </Text>
-                    {typeof value === "string" ? (
+                    {typeof value === "string" || typeof value === "number" ? (
                       <Text>{value}</Text>
                     ) : (
-                      <img src={(value as { src: string }).src} alt={key} />
+                      <>
+                        {console.log(data)}
+                        <img src={(value as { src: string }).src} alt={key} />
+                      </>
                     )}
                   </Box>
                 ))}

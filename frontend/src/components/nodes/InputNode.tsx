@@ -1,5 +1,5 @@
 import { Box, Center, Textarea, StackDivider, VStack, HStack, Spinner, Tooltip } from "@chakra-ui/react"
-import React from "react"
+import React, { useEffect } from "react"
 import { Handle, Position } from "reactflow"
 import useStore from "../../store"
 import "../../css/handle.css"
@@ -7,7 +7,12 @@ import "../../css/handle.css"
 function InputNode({ id, data, isConnectable }) {
   const reactFlowState = useStore()
   const [input, setInput] = React.useState("")
-
+  useEffect(() => {
+    const currentNode = reactFlowState.getNode(id)
+    if (currentNode && currentNode.data) {
+      setInput(currentNode.data.output)
+    }
+  }, [])
   const handleInputChange = (e) => {
     let inputValue = e.target.value
     setInput(inputValue)

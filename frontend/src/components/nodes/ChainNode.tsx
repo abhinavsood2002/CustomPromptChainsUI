@@ -15,14 +15,24 @@ function ChainNode({ id, data, isConnectable }) {
   const [temperature, setTemperature] = React.useState(0)
   const [outputLength, setOutputLength] = React.useState("very short")
 
+  // If loading from a template need to load data correctly for correct display
   useEffect(() => {
-    reactFlowState.updateNodeData(id, { temperature: temperature, outputLength: outputLength })
+    if (!data.outputLength) {
+      reactFlowState.updateNodeData(id, {
+        temperature: temperature,
+        outputLength: outputLength,
+      })
+    } else {
+      setTemperature(data.temperature)
+      setOutputLength(data.outputLength)
+    }
   }, [])
 
   useEffect(() => {
     const currentNode = reactFlowState.getNode(id)
 
     if (currentNode && currentNode.data) {
+      setPrompt(currentNode.data.prompt)
       setPromptText(currentNode.data.promptInput)
       setInput(currentNode.data.input)
       setOutput(currentNode.data.output)
@@ -101,7 +111,7 @@ function ChainNode({ id, data, isConnectable }) {
                 placeholder="Enter a prompt to Transform your input"
                 w="95%"
               />
-              <Box w="100%">{promptText && "\n" + promptText}</Box>
+              <Box w="100%">Additional text added to prompt: {promptText && "\n" + promptText}</Box>
             </VStack>
 
             <Box w="100%">Input: {"\n" + input}</Box>
