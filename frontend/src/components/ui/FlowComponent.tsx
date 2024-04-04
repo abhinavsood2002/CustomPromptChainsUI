@@ -191,6 +191,7 @@ const FlowComponent = () => {
             onPaneClick={onPaneClick}
             onEdgeDoubleClick={onEdgeDoubleClick}
             nodeTypes={NodeTypes}
+            minZoom={0.001}
           >
             <Background />
             {menu && <ContextMenu onClick={onPaneClick} {...menu} />}
