@@ -17,6 +17,17 @@ model_id = "mistralai/Mistral-7B-Instruct-v0.2"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto")
 
+def instruction_for_text_length(textLength):
+    match textLength:
+        case "very short":
+            return "Ensure your response is very short (30-70 words)."
+        case "short":
+            return "Ensure your response is short (70-150 words)."
+        case "medium":
+            return "Ensure your response is medium (150-300 words) in length."
+        case "long":
+            return "Ensure your response is thorough (300+ words) in length."
+
 def run_prompt(prompt, temperature):
     do_sample = temperature != 0
     messages = [
@@ -37,8 +48,8 @@ def run_chain_node():
     input_ = request.args.get('input')
     temperature = float(request.args.get('temperature'))
     textLength = request.args.get('length')
-    prompt_updated = f"""Use the given context to complete the given instruction. Make your {textLength} answer in length.
-Task:
+    prompt_updated = f"""Use the given context to complete the given instruction. Do not repeat the instructions or context given. {instruction_for_text_length(textLength)}
+Instruction:
 {prompt}
 
 Context:
@@ -57,7 +68,7 @@ def run_prompt_node():
     prompt = request.args.get('prompt')
     temperature = float(request.args.get('temperature'))
     textLength = request.args.get('length')
-    prompt_updated = f"""{prompt} Make your answer {textLength} in length.
+    prompt_updated = f"""{prompt} Do not repeat the instructions given. {instruction_for_text_length(textLength)}
 """
     print(f"Prompt Run:\n {prompt_updated}")
     output = run_prompt(prompt_updated, temperature)
@@ -78,4 +89,4 @@ def run_txt_to_image_node():
     return send_file(img_io, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False)
+    app.run(host="0.0.0.0",debug=True, use_reloader=False)
