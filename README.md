@@ -1,4 +1,4 @@
-# CustomPrompChainsUI
+# Chaining Generative AI Models for Ideation in Creative Writing
 A Graphical Node-based interface for LLMs used to explore ideation and creativity for writers.
 
 Users chain together generative AI models organised into nodes for creative tasks. This system was designed to overcome the structural constraints inherent in traditional chat-based, one-on-one interactions. These limitations include 
@@ -20,5 +20,5 @@ The repository is divided into a React.js [frontend](./frontend) and a Flask [ba
 
 The backend uses Mistral-7B and Stable Diffusion 2.1 via the transformers and diffusers libraries respectively. We run the backend models on a NVIDIA RTX A6000 50GB GPU.
 
-## Templates
-.json files for Templates can be found in the templates folder. These can be dropped into the sidebar for their use in the system.
+## Use case and Templates
+A comprehensive use case and the used .json template files (along with pdf/image screenshots) [use case and templates](./use%20case%20and%20templates%20-%20writing%20a%20short%20story/) folder. The resulting story is available in `Final Resulting Story.txt`

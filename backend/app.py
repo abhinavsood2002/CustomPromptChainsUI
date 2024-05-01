@@ -1,15 +1,16 @@
 from flask import Flask, request, send_file
 from flask_cors import CORS
 import torch
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler
 import io
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 ## Initialise text to image model
-model_id = "CompVis/stable-diffusion-v1-4"
+model_id = "stabilityai/stable-diffusion-2-1"
 device = "cuda"
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
+pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 pipe = pipe.to(device)
 
 ## Intialise Large language model
